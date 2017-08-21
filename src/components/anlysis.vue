@@ -17,9 +17,6 @@
 	</div>
 </template>
 <script type="text/javascript">
-	import Chart from 'chart.js/dist/Chart.min.js'
-
-
 	export default {
 		name:"anlysis",
 		data(){

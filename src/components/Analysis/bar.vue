@@ -5,10 +5,10 @@
 			<form class="form-horizontal">
 				<div class="form-group firstGroup row">
 
-					<h4 class="col-md-4">1.选择生成的图形</h4>
+					<h5 class="col-md-4">1.选择生成的图形</h5>
 					<div class="col-md-3">
 						<select v-model="chartData.kind">
-							<option v-for="item in kindData" :value="item.name" >{{item.name}}</option>
+							<option v-for="item in kindData" :value="item.type" >{{item.name}}</option>
 						</select>
 					</div>
 					<div class="col-md-5">
@@ -16,13 +16,13 @@
 					</div>
 				</div>
 				<div class="form-group secondGroup row">
-					<h4 class="col-md-3">2.选择分类项</h4>
+					<h5 class="col-md-3">2.选择分类项</h5>
 					<div class="col-md-3">
 						<select v-model="chartData.xAxes">
 							<option v-for="item in inputData" :value="item.name" >{{item.name}}</option>
 						</select>
 					</div>
-					<h4 class="col-md-3">3.选择比较项</h4>
+					<h5 class="col-md-3">3.选择比较项</h5>
 					<div class="col-md-3" v-model="chartData.xAxes">
 						<select v-model="chartData.yAxex">
 							<option v-for="item in inputData" :value="item.name" v-if="chartData.xAxes!=item.name">{{item.name}}</option>
@@ -32,19 +32,19 @@
 				</div>
 				<div class="form-group thirdGroup">
 					<div class="row">
-						<h5 class="col-md-offset-4 col-md-3">3.(可选)添加筛选项</h5>
+						<h5 class=" col-md-3">4.(可选)添加筛选项</h5>
 						<span class="fui-plus col-md-1 mySpan" @click="changeReomve(1)"></span>
 						<span class="fui-cross  col-md-1 mySpan" @click="changeReomve(0)"></span>
 					</div>
 					<transition-group name="filter" tag="div">
 						<div class="row oneRow" v-for="(item,index) in chartData.remove" :key="index">
-							<h4 class="col-md-3">选择类型</h4>
+							<h5 class="col-md-3">选择类型</h5>
 							<div class="col-md-3">
 								<select v-model="item.name">
 									<option v-for="option in optionData" :value="option">{{option}}</option>
 								</select>
 							</div>
-							<h4 class="col-md-2">筛选条件</h4>
+							<h5 class="col-md-2">筛选条件</h5>
 							<div class="col-md-4">
 								<input type="text" name="require" v-model="item.value" placeholder="请输入筛选条件">
 							</div>
@@ -54,7 +54,7 @@
 
 				<div class="form-group fourGroup">
 					<div class="row">
-						<h5 class="col-md-offset-3 col-md-3">4.输入分析数量</h5>
+						<h5 class=" col-md-3">5.输入分析数量</h5>
 						<div class="col-md-3">
 							<input type="text" v-model="chartData.number" @change="checkNumber">
 						</div>
@@ -65,7 +65,7 @@
 			</form>
 		</div>
 		<div class="chartDiv" v-if="!isShow">
-			
+			<canvas></canvas>
 		</div>
 
 		
@@ -80,6 +80,7 @@
 	</div>
 </template>
 <script type="text/javascript">
+	import Chart from 'chart.js/dist/Chart.min.js'
 	export default {
 		name:'bar',
 		watch:{
@@ -94,7 +95,7 @@
 			imgPath(){
 				for(let item in this.kindData)
 				{
-					if(this.kindData[item].name === this.chartData.kind)
+					if(this.kindData[item].type === this.chartData.kind)
 					{
 						return this.kindData[item].path
 					}
@@ -118,7 +119,7 @@
 				isShow:true,
 				isShadow:false,
 				chartData:{
-					kind:"折线图",
+					kind:"polarArea",
 					xAxes:"",
 					yAxex:"",
 					remove:[],
@@ -126,19 +127,23 @@
 				},
 				kindData:[{
 					name:"折线图",
-					path:require("../../assets/chart2.png")
+					path:require("../../assets/chart2.png"),
+					type:"line"
 				},{
 					name:"柱状图",
-					path:require("../../assets/chart3.png")
+					path:require("../../assets/chart3.png"),
+					type:"bar"
 				},{
 					name:"环形图",
-					path:require("../../assets/chart1.png")
+					path:require("../../assets/chart1.png"),
+					type:"pie"
 				},{
 					name:"极地区域图",
-					path:require("../../assets/chart4.png")
+					path:require("../../assets/chart4.png"),
+					type:"polarArea"
 				},],
 				inputData:[],	
-				curNumber:100,
+				curNumber:0,
 				pitruePath:"",
 			}
 		},
@@ -172,9 +177,84 @@
 					this.chartData.number = 1;
 				}
 			},
+			checkData(){
+				if(this.chartData.xAxes == "" || this.chartData.yAxex == '' || this.chartData.number == '')
+				{
+					return false
+				}
+				for(let i = 0;i<this.chartData.remove.length;i++)
+				{
+					if(this.chartData.remove[i].name == '' || this.chartData.remove[i].value == '')
+					{
+						return false
+					}
+				}
+				return true
+			},
+			handleData(){
+				//getData() api
+
+				let data  = [];
+				let id = 0 ;
+				let timeIndex = 0;
+				for(let i = 0; i<this.chartData.number;i++)
+				{
+					let testid = id;
+					let time ="2017-8-14 17:"+timeIndex;
+					let name = 'Name'+id;
+					let price = '$'+id;
+					let content = '这是第'+id+'个简介';
+					let mes = {
+						"id":testid,
+						"time":time,
+						"name":name,
+						"price":price,
+						"content":content
+					};
+					id++;
+					timeIndex++;
+					if(id >9)
+					{
+						id = 0;				
+					}
+					data.push(mes);
+				}
+				
+				//remove data
+
+				for(let k  = 0; k<this.chartData.remove.length; k++)
+				{
+					let j = 0;
+					let patt = new RegExp(String(this.chartData.remove[k].value));
+					let moden = this.chartData.remove[k].name;
+					do{
+						if(!patt.test( data[j][moden] ))
+						{
+							data.splice(j, 1);
+							if(j<data.length)
+								continue;
+							else break;
+						}else{
+							j++;
+						}
+					}while(j<data.length)
+				}
+
+				//change data to chart's data
+
+
+				console.log(data);
+			},
 			creatChart(){
-				this.isShadow = true;
-				setTimeout(()=>{this.isShadow = false;},1000);
+				if(this.checkData())
+				{	
+					this.isShadow = true;
+					let data  = this.handleData();
+					this.isShadow = false;
+				}
+				else{
+					alert("填写错误！请查看！")
+				}
 			}	
 		},
 		mounted(){
@@ -198,6 +278,8 @@
 			}
 			// getInputData api
 			this.inputData = getInputData.attr;
+			// getNumber api
+			this.curNumber = 100;
 		}
 	}
 </script>
@@ -211,13 +293,12 @@
 	}
 	.firstGroup{
 		height: 260px;
-		padding: 10px;
 		line-height: 240px;
 	}
 	.firstGroup img{
 		height: 240px;
 	}
-	.firstGroup h4{
+	.firstGroup h5{
 		line-height: 240px;
 		margin: 0;
 	}
@@ -226,13 +307,14 @@
 		line-height: 61px;
 		padding-bottom: 20px;
 	}
-	.secondGroup h4{
+	.secondGroup h5{
 		margin:0px;
 		line-height: 61px;
 	}
 	div.thirdGroup,div.fourGroup{
 		padding-top: 20px;
 		padding-bottom: 40px;
+		padding-left: 10px;
 	}
 	div.thirdGroup h5{
 		margin-top: 0px;
@@ -254,7 +336,7 @@
 		margin-bottom: 30px;
 	}
 	.filter-enter-active,.filter-leave-active{
-		transition: all 1s;
+		transition: all .4s;
 
 	}
 	.filter-enter,.filter-leave-to{
