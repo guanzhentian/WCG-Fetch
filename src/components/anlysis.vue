@@ -1,13 +1,16 @@
 <template>
 	<div class="basic">
 		<div class="back"></div>
-		<div class="toolbar">
-			<ul>
+		<div class="toolbar" :class="{'left':isShow}">		
+			<ul >
 				<router-link v-for="item in pathData" :to="{'path':item.path}" tag="li" class="text-center" v-text="item.text" :key="item.path">
 				</router-link>	
-			</ul>
-			
+			</ul>				
+			<div class="right">
+				<span class="fui-triangle-right-large " @click="isShow = !isShow"></span>
+			</div>
 		</div>
+		
 		<div class="content">
 			<router-view></router-view>
 		</div>
@@ -21,6 +24,7 @@
 		name:"anlysis",
 		data(){
 			return{
+				isShow:true,
 				pathData:[{
 					path:'/anlysis/process',
 					text:'爬取过程'
@@ -48,15 +52,19 @@
  		background-size: 100%;
 	}
 	.basic{
-		overflow: hidden;
-		height:820px;
-		margin-bottom: 50px;
+		overflow-x: hidden;
+		min-height:700px;
 	}
 	.toolbar{
+		position: relative;
 		float:left;
 		background-color: #2C3E50;
-		width: 8%;
+		position: absolute;
+		left:0;
+		width: 150px;
 		height: 800px;
+		transition: all .4s;
+		z-index: 100;
 	}
 	.toolbar ul{
 		list-style: none;
@@ -75,11 +83,26 @@
 		background-color:#E74C3C;
 	}
 	.content{
-		height: 800px;
+		min-height: 800px;
 		background-color: white;
 		width: 92%;
 		float: left;
-		overflow-x: hidden;
-		overflow-y: scroll;
+	}
+	.right{
+		position: absolute;
+		right:-34px;
+	}
+	.left{
+		left:-150px;
+	}
+	div.right span{
+		font-size: 40px;
+		cursor: pointer;
+	}
+	.toolbarChange-enter-active,.toolbarChange-leave-active{
+		transition: all .4s;
+	}
+	.toolbarChange-enter,.toolbarChange-leave-to{
+		transform: translateX(-150px);
 	}
 </style>

@@ -1,6 +1,6 @@
 <template>
 	<div class="container">
-		<div class="gameArea">
+		<div class=" gameArea">
 			<div v-for="(item,index) in positionData" class="gameBlock text-center " :class="scroeColor(item)" v-text="checkNone(item.value)"></div>
 		</div>
 		<div class="right">
@@ -19,6 +19,7 @@
 		},
 		data(){
 			return{
+				curInv:null,
 				scroe:0,
 				positionData:[{
 					value:0
@@ -472,6 +473,10 @@
 					event = event || window.event;
 					this.keyDownFun(event.keyCode);
 				}
+				document.body.onkeydown = (event)=>{
+					if(event.keyCode >36 && event.keyCode < 41)
+						event.preventDefault();
+				}
  			});
 		}
 	}
@@ -487,7 +492,6 @@
 		max-width:600px;
 		min-width:600px;
 		padding: 10px;
-
 		float: left
 	}
 	.gameBlock{

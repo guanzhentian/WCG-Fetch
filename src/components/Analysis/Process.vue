@@ -1,20 +1,20 @@
 <template>
 	<div class="container">
-		<div class="col-xs-5 col-xs-offset-1 block text-center">
-			<h3>已收集URL</h3>
-			<h3>……</h3>
+		<div class="col-xs-5 col-xs-offset-1 block text-center middle">
+			<h4>已收集URL</h4>
+			<h4>……</h4>
 		</div>
-		<div class="col-xs-5 col-xs-offset-1 block text-center">
-			<h3>已分析URL</h3>
-			<h3>……</h3>
+		<div class="col-xs-5 col-xs-offset-1 block text-center middle">
+			<h4>已分析URL</h4>
+			<h4>……</h4>
 		</div>
-		<div class="col-xs-5 col-xs-offset-1 block text-center">
-			<h3>已获取目标数据</h3>
-			<h3>……</h3>
+		<div class="col-xs-5 col-xs-offset-1 block text-center middle">
+			<h4>已获取目标数据</h4>
+			<h4>……</h4>
 		</div>
-		<div class="col-xs-5 col-xs-offset-1 block text-center">
-			<h3>查看获取到的数据</h3>
-			<h3>……</h3>
+		<div class="col-xs-5 col-xs-offset-1 block text-center middle">
+			<h4>查看获取到的数据</h4>
+			<router-link :to="{path:'/getData'}" tag="a">查看</router-link>
 		</div>
 	</div>
 </template>
@@ -28,7 +28,10 @@
 		margin-top: 30px;
 		height: 300px;
 		padding-top: 50px;
-		color:black;
-		border:1px solid black;
+		border:1px solid #BDC3C7;
+		border-radius: 30px;
+	}
+	.middle{
+		padding-top: 80px;
 	}
 </style>

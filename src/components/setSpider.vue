@@ -14,11 +14,32 @@
 									<input type="url" name="mainUrl" class="form-control" placeholder="请输入网址" v-model="inputData.mainUrl">
 								</div>
 							</div>
+
+							<div class="row content col-xs-offset-2">
+								<h6 class="switchTxt">是否启用chrome headless(需js渲染获取数据的请开启)</h6>
+									<div class="switchBox" @click="changeSwitch">
+										<div class="testSwitch">
+											<transition name="one">
+												<div v-show="switchShow" class="switchOne" key="1">
+													<p class="text-center switchText">ON</p>
+													<div class="rightTrue">&nbsp;</div>
+												</div>
+											</transition>
+											<transition name="two">
+												<div v-show="!switchShow" class="switchTwo" key="2">
+													<div class="leftFalse">&nbsp;</div>
+													<p class="text-center switchText">OFF</p>
+												</div>
+											</transition>
+										</div>
+									</div>
+								
+							</div>
 						</div>
 						<div class="formDetail container">
 							<div class="row content">
-								<h3 class="text-center">请输入限定网址范围的正则表达式</h3>
-								<p class="text-muted text-center">可以加快爬取的速度以及准确性，可忽略</p>
+								<h3 class="text-center">请输入详情页的网址</h3>
+								<p class="text-muted text-center">只会在匹配详情页网址的URL中进行分析属性</p>
 							</div>
 							<div class="row content">
 								<div class="form-group  col-xs-8 col-xs-offset-2">
@@ -28,8 +49,8 @@
 						</div>
 						<div class="formDetail container">
 							<div class="row content">
-								<h3 class="text-center">请输入详情页的网址</h3>
-								<p class="text-muted text-center">可输入多个，增加准确性，但至少需要输入一个</p>
+								<h3 class="text-center">请输入限定网址范围的正则表达式</h3>
+								<p class="text-muted text-center">可以加快爬取的速度，可输入多个</p>
 							</div>
 							<div class="content"></div>
 							<transition-group name="dataUrlList" tag="div" >
@@ -105,6 +126,7 @@
 				curUpInv:null,
 				target:0,
 				curActive:0,
+				switchShow:true,
 				targetIndex:[{
 					value:0
 				},{
@@ -116,6 +138,7 @@
 				}],
 				inputData:{
 					mainUrl:"",
+					method:"chrome",
 					detailUrl:"",
 					dataUrl:[""],
 					attr:[{
@@ -215,6 +238,13 @@
 
 				this.curActive = index;
 
+			},
+			changeSwitch(){
+				this.switchShow = !this.switchShow;
+				if(this.switchShow === false)
+					this.inputData.method="request";
+				else
+					this.inputData.method="chrome";
 			}
 		},
 		mounted(){
@@ -315,5 +345,68 @@
 	.submit span{
 		width:80px;
 		cursor: pointer;
+	}
+	.switchBox{
+		border-radius: 20px;
+		height: 30px;
+		display: inline-block;
+		padding:0px;
+		cursor: pointer;
+		width: 100px;
+		overflow:hidden;
+		float: left;
+	}
+	.switchTxt{
+		float: left;
+		margin:0;
+		margin-right: 30px;
+	}
+	.testSwitch{
+		width: 200px;
+	}
+	.switchOne{
+		width: 100px;
+		height: 100%;
+		background-color: #2C3E50;
+		color:#16A085;
+		border-radius: 20px;
+		float: left;
+	}
+	.switchTwo{
+		width: 100px;
+		height: 100%;
+		background-color: #BDC3C7;
+		color:#ECF0F1;
+		border-radius: 20px;
+		float: left;
+	}
+	.rightTrue{
+		background-color:#16A085;
+		width: 40%;
+		float: left;
+		border-radius: 20px;
+	}
+	.switchText{
+		width: 60%;
+		height: 30px;
+		float: left;
+	}
+	.leftFalse{
+		background-color: #95A5A6;
+		float: left;
+		width: 40%;
+		border-radius: 20px;
+	}
+	.one-enter-active,.one-leave-active,.two-enter-active,.two-leave-active{
+		transition: 0.2s;
+	}
+	.one-enter{
+		transform: translateX(-100px);
+	}
+	.one-leave-to{
+		transform: translateX(-100px);
+	}
+	.two-enter-to{
+		transform: translateX(-100px);
 	}
 </style>
