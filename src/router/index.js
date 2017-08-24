@@ -4,10 +4,7 @@ import index from '@/components/index'
 import setSpider from '@/components/setSpider'
 import getData from '@/components/getData'
 import anlysis from '@/components/anlysis'
-import Process from '@/components/Analysis/process'
-import bar from '@/components/Analysis/bar'
-import kind from '@/components/Analysis/kind'
-import c2048 from '@/components/Analysis/c2048'
+import about from '@/components/about'
 
 Vue.use(Router)
 
@@ -31,26 +28,12 @@ export default new Router({
     {
       path:'/anlysis',
       name:'anlysis',
-      component:anlysis,
-      redirect:'/anlysis/process',
-      children:[{
-        path:'process',
-        name:'process',
-        component:Process,
-      },
-      {
-        path:'bar',
-        name:'bar',
-        component:bar,
-      },{
-        path:'kind',
-        name:'kind',
-        component:kind,
-      },{
-        path:'2048',
-        name:'c2048',
-        component:c2048,
-      }]
+      component:anlysis
+    },
+    {
+      path:'/about',
+      name:'about',
+      component:about
     }
   ]
 })

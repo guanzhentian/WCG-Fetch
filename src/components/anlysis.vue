@@ -3,8 +3,8 @@
 		<div class="back"></div>
 		<div class="toolbar" :class="{'left':isShow}">		
 			<ul >
-				<router-link v-for="item in pathData" :to="{'path':item.path}" tag="li" class="text-center" v-text="item.text" :key="item.path">
-				</router-link>	
+				<li v-for="item in pathData" @click="currentView = item.path" class="text-center" :class="{'acitve':currentView == item.path}" v-text="item.text" :key="item.path" >
+				</li>	
 			</ul>				
 			<div class="right">
 				<span class="fui-triangle-right-large " @click="isShow = !isShow"></span>
@@ -12,31 +12,55 @@
 		</div>
 		
 		<div class="content">
-			<router-view></router-view>
+			<transition name="componentChange" mode="out-in">
+				<component :is="currentView" :selectId='selectId'></component>
+			</transition>	
 		</div>
+		<selectSpider @onSelect="select" v-if="isSelectShow"></selectSpider>
 	</div>
 </template>
 <script type="text/javascript">
+import Process from './Analysis/process'
+import bar from './Analysis/bar'
+import kind from './Analysis/kind'
+import c2048 from './Analysis/c2048'
+import selectSpider from './selectSpider'	
 	export default {
 		name:"anlysis",
+		components:{
+			Process,
+			bar,
+			kind,
+			c2048,
+			selectSpider
+		},
 		data(){
 			return{
+				isSelectShow:true,
+				selectId:null,
+				currentView:'Process',
 				isShow:true,
 				pathData:[{
-					path:'/anlysis/process',
+					path:'Process',
 					text:'爬取过程'
 				},{
-					path:'/anlysis/bar',
+					path:'bar',
 					text:'图表分析'
 				},{
-					path:'/anlysis/kind',
+					path:'kind',
 					text:'分类分析'
 				},
 				{
-					path:'/anlysis/2048',
+					path:'c2048',
 					text:'2048'
 				}]
 			}
+		},
+		methods:{
+			select(id){
+				this.selectId = id;
+				this.isSelectShow = false;
+			},
 		}
 	}
 </script>
@@ -76,7 +100,7 @@
 	}
 	.toolbar ul>li:hover,
 	.toolbar ul>li:active,
-	.toolbar ul>li.router-link-active{
+	li.acitve {
 		background-color:#E74C3C;
 	}
 	.content{
@@ -96,10 +120,18 @@
 		font-size: 40px;
 		cursor: pointer;
 	}
-	.toolbarChange-enter-active,.toolbarChange-leave-active{
+	.toolbarChange-enter-active,.toolbarChange-leave-active,.componentChange-enter-active,.componentChange-leave-active{
 		transition: all .4s;
 	}
 	.toolbarChange-enter,.toolbarChange-leave-to{
 		transform: translateX(-150px);
+	}
+	.componentChange-enter{
+		transform: translateY(20%);
+		opacity: 0;
+	}
+	.componentChange-leave-to{
+		transform: translateY(-20%);
+		opacity: 0;
 	}
 </style>

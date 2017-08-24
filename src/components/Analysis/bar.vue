@@ -1,7 +1,7 @@
 <template>
 	<div>
 	<div class="container">
-		<div class="formDiv" v-if="isShow">
+		<div class="formDiv" v-show="isShow" :key="1">
 			<form class="form-horizontal">
 				<div class="form-group firstGroup row">
 
@@ -16,14 +16,35 @@
 					</div>
 				</div>
 				<div class="form-group secondGroup row">
-					<h5 class="col-md-3">2.选择分类项</h5>
-					<div class="col-md-3">
+					<h5 class="col-md-2">2.选择分类项</h5>
+					<div class="col-md-2">
 						<select v-model="chartData.xAxes">
 							<option v-for="item in inputData" :value="item.name" >{{item.name}}</option>
 						</select>
 					</div>
-					<h5 class="col-md-3">3.选择比较项</h5>
-					<div class="col-md-3" v-model="chartData.xAxes">
+					<div class="col-md-2">
+						<span>是否删除重复项</span>
+					</div>
+					<div class="col-md-2">	
+						<div class="switchBox" @click="switchShow = !switchShow">
+							<div class="testSwitch">
+								<transition name="one">
+									<div v-if="switchShow" class="switchOne" key="1">
+										<p class="text-center switchText">YES</p>
+										<div class="rightTrue">&nbsp;</div>
+									</div>
+								</transition>
+								<transition name="two">
+									<div v-if="!switchShow" class="switchTwo" key="2">
+										<div class="leftFalse">&nbsp;</div>
+										<p class="text-center switchText">NO</p>
+									</div>
+								</transition>
+							</div>
+						</div>
+					</div>
+					<h5 class="col-md-2">3.选择比较项</h5>
+					<div class="col-md-2" v-model="chartData.xAxes">
 						<select v-model="chartData.yAxex">
 							<option v-for="item in inputData" :value="item.name" v-if="chartData.xAxes!=item.name">{{item.name}}</option>
 							<option>数量</option>
@@ -61,28 +82,35 @@
 						<p class="text-muted">(当前可用数据{{curNumber}})</p>
 					</div>
 				</div>
-				<button class="btn btn-primary beginBtn center-block" type="button" @click="creatChart">生成图表</button>
+				<button class="btn btn-primary beginBtn center-block" type="button" @click="creatChart">生成图表</button>	
 			</form>
 		</div>
-		<div class="chartDiv" v-if="!isShow">
-			<canvas></canvas>
-		</div>
-
-		
+		<div class="chartDiv" v-show="!isShow" :key="2">
+			<canvas id="myChart"></canvas>
+			<button class="btn btn-primary returnBtn center-block" @click="destory">返回</button>
+		</div>		
 	</div>
 	<transition name="shadow">
 		<div v-if="isShadow" class="shadow">
-			<div class="loadingImg center-block">
+			<div class="loadingImg center-block" v-if="isLoading">
 				<img src="../../assets/loading.gif">
 			</div>
 		</div>
 	</transition>
+	
 	</div>
 </template>
 <script type="text/javascript">
+	
 	import Chart from 'chart.js/dist/Chart.min.js'
 	export default {
 		name:'bar',
+		props:{
+			selectId:{
+				require:true,
+				type:[String,Number]
+			}
+		},
 		watch:{
 			chartData(newValue,oldValue){
 				if(this.chartData.number > curNumber)
@@ -93,7 +121,7 @@
 		},
 		computed:{
 			imgPath(){
-				for(let item in this.kindData)
+				for(var item in this.kindData)
 				{
 					if(this.kindData[item].type === this.chartData.kind)
 					{
@@ -103,8 +131,8 @@
 				return null
 			},
 			optionData(){
-				let a = [];
-				for(let i in this.inputData)
+				var a = [];
+				for(var i in this.inputData)
 				{
 					if(this.inputData[i].name != this.chartData.xAxes && this.inputData[i].name != this.chartData.yAxex)
 					{
@@ -119,17 +147,16 @@
 				isShow:true,
 				isShadow:false,
 				chartData:{
-					kind:"polarArea",
+					kind:"bar",
 					xAxes:"",
 					yAxex:"",
 					remove:[],
 					number:""
 				},
+				curChart:null,
+				isLoading:false,
+				switchShow:true,
 				kindData:[{
-					name:"折线图",
-					path:require("../../assets/chart2.png"),
-					type:"line"
-				},{
 					name:"柱状图",
 					path:require("../../assets/chart3.png"),
 					type:"bar"
@@ -182,7 +209,7 @@
 				{
 					return false
 				}
-				for(let i = 0;i<this.chartData.remove.length;i++)
+				for(var i = 0;i<this.chartData.remove.length;i++)
 				{
 					if(this.chartData.remove[i].name == '' || this.chartData.remove[i].value == '')
 					{
@@ -194,17 +221,17 @@
 			handleData(){
 				//getData() api
 
-				let data  = [];
-				let id = 0 ;
-				let timeIndex = 0;
-				for(let i = 0; i<this.chartData.number;i++)
+				var data  = [];
+				var id = 0 ;
+				var timeIndex = 0;
+				for(var i = 0; i<this.chartData.number;i++)
 				{
-					let testid = id;
-					let time ="2017-8-14 17:"+timeIndex;
-					let name = 'Name'+id;
-					let price = '$'+id;
-					let content = '这是第'+id+'个简介';
-					let mes = {
+					var testid = id;
+					var time ="2017-8-14 17:"+timeIndex;
+					var name = 'Name'+id;
+					var price = '$'+id;
+					var content = '这是第'+id+'个简介';
+					var mes = {
 						"id":testid,
 						"time":time,
 						"name":name,
@@ -222,13 +249,13 @@
 				
 				//remove data
 
-				for(let k  = 0; k<this.chartData.remove.length; k++)
+				for(var k  = 0; k<this.chartData.remove.length; k++)
 				{
-					let j = 0;
-					let patt = new RegExp(String(this.chartData.remove[k].value));
-					let moden = this.chartData.remove[k].name;
+					var j = 0;
+					var patt = new RegExp(String(this.chartData.remove[k].value));
+					var Template = this.chartData.remove[k].name;
 					do{
-						if(!patt.test( data[j][moden] ))
+						if(!patt.test( data[j][Template] ))
 						{
 							data.splice(j, 1);
 							if(j<data.length)
@@ -241,24 +268,154 @@
 				}
 
 				//change data to chart's data
+				var buildData = {
+					labels:[],
+					data:[]
+				}
+				var targetX = this.chartData.xAxes;
+				var targetY = this.chartData.yAxex;
+				var patt = /\d+/;
+				for(var j = 0;j<data.length;j++)
+				{
+					var index = buildData.labels.indexOf(data[j][targetX]);
+					if( index == -1)
+					{						
+						if(targetY == '数量')
+						{
+							buildData.labels.push(data[j][targetX]);
+							buildData.data.push(1);
+						}
+						else
+						{
+							var result = patt.exec(data[j][targetY]);
+							if(result != null)
+							{
+								buildData.labels.push(data[j][targetX]);
+								buildData.data.push(result[0]);
+							}
+							
+						}
+					}else{
+						if(targetY == '数量')
+						{
+							buildData.data[index]++;				
+						}
+						else
+						{
+							if(!this.switchShow)
+							{	
+								var result = patt.exec(data[j][targetY]);
+								if(result != null)
+								{
+									buildData.labels.push(data[j][targetX]+"重复名"+buildData.labels.length);
+									buildData.data.push(result[0]);
+								}
+							}	
+						}
+					}
+				}
 
-
-				console.log(data);
+				return buildData;
 			},
 			creatChart(){
 				if(this.checkData())
 				{	
+					this.isLoading = true;
 					this.isShadow = true;
-					let data  = this.handleData();
+					var finalData  = this.handleData();
+					this.isShow = false;
 					this.isShadow = false;
+					this.isLoading = false;
+					//配置图表属性
+					var bgColor = [];
+					for(var i = 0;i<finalData.labels.length;i++)
+					{
+						var word = '#';
+						for(var j = 0;j<6;j++)
+						{
+							var site = Math.floor(Math.random()*16);
+							switch(site)
+							{
+								case 10:word+='A';
+										break;
+								case 11:word+='B';
+										break;		
+								case 12:word+='C';
+										break;
+								case 13:word+='D';
+										break;
+								case 14:word+='E';
+										break;
+								case 15:word+='F';
+										break;
+								default:word+=site;
+									break;
+							}
+						}
+						bgColor.push(word);
+					}
+					var ctx = document.getElementById('myChart').getContext('2d');
+					this.curChart = new Chart(ctx, {
+					    // The type of chart we want to create
+					    type:this.chartData.kind,
+					    // The data for our dataset
+					    data: {
+					        labels:finalData.labels,
+					        datasets: [{
+					            data:finalData.data,
+					        	backgroundColor:bgColor
+					        }],
+					        
+					    },
+					    // Configuration options go here
+					    options: {
+					    	responsiveAnimationDuration:2000,
+					    	legend:{
+					    		labels:{
+					    			
+					    		}
+					    	},
+					    	title: {
+					            display: true,
+					            text: this.chartData.xAxes+' - '+this.chartData.yAxex+" 图",
+					            fontSize:20,
+					            fontColor:'#34495E',
+					            padding:20
+					        },
+					    	onClick(){
+					    		//alert("yes!");
+					    	},
+					    	scales: {
+			                    xAxes: [{
+			                        display: true,
+			                        scaleLabel: {
+			                            display: true,
+			                            labelString: this.chartData.xAxes
+			                        }
+			                    }],
+			                    yAxes: [{
+			                        display: true,
+			                        scaleLabel: {
+			                            display: true,
+			                            labelString: this.chartData.yAxex
+			                        }
+			                    }]
+			                }
+					    }
+					});
+					
 				}
 				else{
 					alert("填写错误！请查看！")
 				}
-			}	
+			},
+			destory(){
+				this.curChart.destroy();
+				this.isShow = !this.isShow;
+			}
 		},
 		mounted(){
-			let getInputData  = {
+			var getInputData  = {
 				'attr':[{
 					name:"id",
 					value:""
@@ -279,7 +436,7 @@
 			// getInputData api
 			this.inputData = getInputData.attr;
 			// getNumber api
-			this.curNumber = 100;
+			this.curNumber = 500;
 		}
 	}
 </script>
@@ -348,11 +505,15 @@
 	.shadow-enter,.shadow-leave-to{
 		transform: translateY(900px);
 	}
-
 	.beginBtn{
 		width: 300px;
 		font-size: 20px;
 		margin-bottom: 50px;
+	}
+	.returnBtn{
+		width: 300px;
+		font-size: 20px;
+		margin-top: 50px;
 	}
 	.shadow{
 		position: fixed;
@@ -366,6 +527,69 @@
 		position: relative;
 		top:40%;
 		width: 32px;
-
+	}
+	.switchBox{
+		border-radius: 20px;
+		height: 30px;
+		margin-top: 15px;
+		display: inline-block;
+		padding:0px;
+		cursor: pointer;
+		width: 100px;
+		overflow:hidden;
+	}
+	.switchTxt{
+		float: left;
+		margin:0;
+		margin-right: 30px;
+	}
+	.testSwitch{
+		width: 200px;
+	}
+	.switchOne{
+		width: 100px;
+		height: 30px;
+		background-color: #2C3E50;
+		color:#16A085;
+		border-radius: 20px;
+		float: left;
+	}
+	.switchTwo{
+		width: 100px;
+		height: 100%;
+		background-color: #BDC3C7;
+		color:#ECF0F1;
+		border-radius: 20px;
+		float: left;
+	}
+	.rightTrue{
+		background-color:#16A085;
+		width: 40%;
+		float: left;
+	}
+	.switchText{
+		width: 60%;
+		height: 30px;
+		float: left;
+	}
+	.leftFalse{
+		background-color: #95A5A6;
+		float: left;
+		width: 40%;
+	}
+	.one-enter-active,.one-leave-active,.two-enter-active,.two-leave-active{
+		transition: 0.2s;
+	}
+	.one-enter{
+		transform: translateX(-100px);
+	}
+	.one-leave-to{
+		transform: translateX(-100px);
+	}
+	.two-enter-to{
+		transform: translateX(-100px);
+	}
+	.chartDiv{
+		width: 100%;
 	}
 </style>

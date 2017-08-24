@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header class="navbar navbar-inverse navbar-fixed-top" id="header">
+    <header class="navbar navbar-inverse navbar-fixed-top" id="header"  v-if="!isManage">
       <div class="navbar-header">
         <router-link tag="a" class="navbar-brand" :to='{path:"/"}'>WCG Fetch</router-link> 
       </div>
@@ -21,6 +21,12 @@
 import Headroom from 'headroom.js'
 export default {
   name: 'app',
+  computed:{
+    isManage(){
+      var patt = new RegExp('manage');
+      return patt.test(this.$route.path);
+    }
+  },
   data(){
     return{
       navbarMsg:[{

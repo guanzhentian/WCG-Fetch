@@ -82,11 +82,11 @@
 			},
 			reStart(){
 				this.scroe = 0;
-				for(let i = 0;i<16;i++)
+				for(var i = 0;i<16;i++)
 				{
 					this.positionData[i].value = 0;
 				}
-				let ran1,ran2
+				var ran1,ran2;
 				do{
 					ran1 = Math.floor(Math.random()*16);
 					ran2 = Math.floor(Math.random()*16);
@@ -114,19 +114,19 @@
 				}
 			},
 			left(){
-				let changeFlag = false;
-				for(let row = 0;row<4;row++)
+				var changeFlag = false;
+				for(var row = 0;row<4;row++)
 				{
-					let rowData = [];
-					for(let i = 0;i<4;i++)
-					{	let newData = this.positionData[row*4 + i].value;
+					var rowData = [];
+					for(var i = 0;i<4;i++)
+					{	var newData = this.positionData[row*4 + i].value;
 						rowData.push(newData);
 					}
-					let index = 0;
+					var index = 0;
 					do{
 						if(rowData[index]!=0)
 						{
-							let flowIndex = index + 1;
+							var flowIndex = index + 1;
 							do{
 								if(rowData[index] === rowData[flowIndex])
 								{
@@ -159,7 +159,7 @@
 						}
 					}while(index <= rowData.length-1)
 					index = 0;
-					let finalIndex = 0;
+					var finalIndex = 0;
 					do
 					{
 						if(index>3)
@@ -183,8 +183,8 @@
 				if(changeFlag)
 					setTimeout(this.randomOne,100);
 				else{
-					let Checkflag = true;
-					for(let i = 0;i<this.positionData.length;i++)
+					var Checkflag = true;
+					for(var i = 0;i<this.positionData.length;i++)
 					{
 						if(this.positionData[i].value === 0)
 							Checkflag = false;
@@ -197,19 +197,19 @@
 				}
 			},
 			right(){
-				let changeFlag = false;
-				for(let row = 0;row<4;row++)
+				var changeFlag = false;
+				for(var row = 0;row<4;row++)
 				{
-					let rowData = [];
-					for(let i = 0;i<4;i++)
-					{	let newData = this.positionData[row*4 + i].value;
+					var rowData = [];
+					for(var i = 0;i<4;i++)
+					{	var newData = this.positionData[row*4 + i].value;
 						rowData.push(newData);
 					}
-					let index = rowData.length-1;
+					var index = rowData.length-1;
 					do{
 						if(rowData[index]!=0)
 						{
-							let flowIndex = index - 1;
+							var flowIndex = index - 1;
 							do{
 								if(rowData[index] === rowData[flowIndex])
 								{
@@ -241,7 +241,7 @@
 						}
 					}while(index > 0)
 					index = rowData.length-1;
-					let finalIndex = rowData.length-1;
+					var finalIndex = rowData.length-1;
 					do
 					{
 						if(index<0)
@@ -265,8 +265,8 @@
 				if(changeFlag)
 					setTimeout(this.randomOne,100);
 				else{
-					let Checkflag = true;
-					for(let i = 0;i<this.positionData.length;i++)
+					var Checkflag = true;
+					for(var i = 0;i<this.positionData.length;i++)
 					{
 						if(this.positionData[i].value === 0)
 							Checkflag = false;
@@ -279,19 +279,19 @@
 				}
 			},
 			top(){
-				let changeFlag = false;
-				for(let row = 0;row<4;row++)
+				var changeFlag = false;
+				for(var row = 0;row<4;row++)
 				{
-					let rowData = [];
-					for(let i = 0;i<4;i++)
-					{	let newData = this.positionData[row + i*4].value;
+					var rowData = [];
+					for(var i = 0;i<4;i++)
+					{	var newData = this.positionData[row + i*4].value;
 						rowData.push(newData);
 					}
-					let index = 0;
+					var index = 0;
 					do{
 						if(rowData[index]!=0)
 						{
-							let flowIndex = index + 1;
+							var flowIndex = index + 1;
 							do{
 								if(rowData[index] === rowData[flowIndex])
 								{
@@ -323,7 +323,7 @@
 						}
 					}while(index <= rowData.length-1)
 					index = 0;
-					let finalIndex = 0;
+					var finalIndex = 0;
 					do
 					{
 						if(index>3)
@@ -347,8 +347,8 @@
 				if(changeFlag)
 					setTimeout(this.randomOne,100);
 				else{
-					let Checkflag = true;
-					for(let i = 0;i<this.positionData.length;i++)
+					var Checkflag = true;
+					for(var i = 0;i<this.positionData.length;i++)
 					{
 						if(this.positionData[i].value === 0)
 							Checkflag = false;
@@ -361,19 +361,19 @@
 				}
 			},
 			buttom(){
-				let changeFlag = false;
-				for(let row = 0;row<4;row++)
+				var changeFlag = false;
+				for(var row = 0;row<4;row++)
 				{
-					let rowData = [];
-					for(let i = 0;i<4;i++)
-					{	let newData = this.positionData[row + i*4].value;
+					var rowData = [];
+					for(var i = 0;i<4;i++)
+					{	var newData = this.positionData[row + i*4].value;
 						rowData.push(newData);
 					}
-					let index = rowData.length-1;
+					var index = rowData.length-1;
 					do{
 						if(rowData[index]!=0)
 						{
-							let flowIndex = index - 1;
+							var flowIndex = index - 1;
 							do{
 								if(rowData[index] === rowData[flowIndex])
 								{
@@ -405,7 +405,7 @@
 						}
 					}while(index > 0)
 					index = rowData.length-1;
-					let finalIndex = rowData.length-1;
+					var finalIndex = rowData.length-1;
 					do
 					{
 						if(index<0)
@@ -429,8 +429,8 @@
 				if(changeFlag)
 					setTimeout(this.randomOne,100);
 				else{
-					let Checkflag = true;
-					for(let i = 0;i<this.positionData.length;i++)
+					var Checkflag = true;
+					for(var i = 0;i<this.positionData.length;i++)
 					{
 						if(this.positionData[i].value === 0)
 							Checkflag = false;
@@ -443,8 +443,8 @@
 				}
 			},
 			randomOne(){
-				let recordeArray = [];
-				for(let i = 0;i<this.positionData.length;i++)
+				var recordeArray = [];
+				for(var i = 0;i<this.positionData.length;i++)
 				{
 					if(this.positionData[i].value === 0)
 					{
@@ -461,7 +461,7 @@
 			}
 		},
 		mounted(){
-			let ran1,ran2;
+			var ran1,ran2;
 			do{
 				ran1 = Math.floor(Math.random()*16);
 				ran2 = Math.floor(Math.random()*16);

@@ -16,11 +16,26 @@
 			<h4>查看获取到的数据</h4>
 			<router-link :to="{path:'/getData'}" tag="a">查看</router-link>
 		</div>
+		
 	</div>
 </template>
 <script type="text/javascript">
 	export default {
-		name:'process'
+		name:'process',
+		data(){
+			return{
+				
+			}
+		},
+		props:{
+			selectId:{
+				require:true,
+				type:[String,Number]
+			}
+		},
+		methods:{
+			
+		}
 	}
 </script>
 <style type="text/css">

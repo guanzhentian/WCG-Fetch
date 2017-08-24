@@ -150,7 +150,7 @@
 		},
 		methods:{
 			scroll(){				
-				let time = new Date();
+				var time = new Date();
 				if(time-this.scrollTime>800)
 				{
 					if(window.event.wheelDelta<0)

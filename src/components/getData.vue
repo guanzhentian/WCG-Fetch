@@ -7,14 +7,6 @@
 			<div class="content">
 				<div class="row">
 					<div class=" col-xs-offset-4 col-xs-3 text-center"><h4>爬取结果</h4></div>
-					<div class="top input-group col-xs-3 pull-right">
-						<input type="search" name="search" placeholder="搜索" class="search form-control">
-						<span class="input-group-btn">
-							<button class="btn">
-								<span class="fui-search"></span>
-							</button>
-						</span>
-					</div>
 				</div>
 				
 				<div style="margin-top:50px;">
@@ -42,18 +34,26 @@
 			</div>
 		</div>
 	</div>
+	<selectSpider @onSelect="select" v-if="isSelectShow"></selectSpider>
 </div>
 </template>
 <script type="text/javascript">
+	import selectSpider from './selectSpider'
+
 	export default {
 		name:"getData",
+		components:{
+			selectSpider
+		},
 		data(){
 			return{
 				showData:[],
 				pageNumber:1,
 				curIndex:0,
 				curMultiple:1,
-				isShow:false
+				isShow:false,
+				isSelectShow:true,
+				selectId:null
 			}
 		},
 		computed:{
@@ -68,13 +68,17 @@
 			}
 		},
 		methods:{
+			select(id){
+				this.selectId = id;
+				this.isSelectShow = false;
+			},
 			getData(id){
-				let testid = id;
-				let time ="2017-8-14 17:21";
-				let name = 'Name'+id;
-				let price = '$'+id;
-				let content = '这是第'+id+'个简介';
-				let mes = {
+				var testid = id;
+				var time ="2017-8-14 17:21";
+				var name = 'Name'+id;
+				var price = '$'+id;
+				var content = '这是第'+id+'个简介';
+				var mes = {
 					"id":testid,
 					"time":time,
 					"name":name,
@@ -89,10 +93,10 @@
 			getDataFromIndex(index){
 				if(typeof index != 'undefined' && index != null)
 					this.curIndex = index;
-				let newData = [];
-				for(let i = 0;i<48;i++)
+				var newData = [];
+				for(var i = 0;i<48;i++)
 				{
-					let mes = this.getData(this.curIndex+48*this.curIndex+(this.curMultiple-1)*10+i);
+					var mes = this.getData(this.curIndex+48*this.curIndex+(this.curMultiple-1)*10+i);
 					newData.push(mes);
 				}
 				this.showData = newData;
@@ -120,7 +124,7 @@
 		},
 		mounted:function(){
 			this.$nextTick(()=>{
-				let number = this.getNumber();
+				var number = this.getNumber();
 				this.pageNumber = Math.ceil(number/48);
 				this.getDataFromIndex(0);
 			});
