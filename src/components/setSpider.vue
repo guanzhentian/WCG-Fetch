@@ -149,7 +149,10 @@
 			}
 		},
 		methods:{
-			scroll(){				
+			scroll(event){	
+				event = event || window.event;
+				console.log(event);
+				event.stopPropagation();			
 				var time = new Date();
 				if(time-this.scrollTime>800)
 				{

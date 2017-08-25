@@ -5,6 +5,7 @@ import setSpider from '@/components/setSpider'
 import getData from '@/components/getData'
 import anlysis from '@/components/anlysis'
 import about from '@/components/about'
+import management from '@/components/management'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path:'/about',
       name:'about',
       component:about
+    },
+    {
+      path:'/management',
+      name:'management',
+      component:management
     }
   ]
 })

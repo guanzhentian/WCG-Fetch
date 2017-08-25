@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header class="navbar navbar-inverse navbar-fixed-top" id="header"  v-if="!isManage">
+    <header class="navbar navbar-inverse navbar-fixed-top" id="header"  v-show="!isManage">
       <div class="navbar-header">
         <router-link tag="a" class="navbar-brand" :to='{path:"/"}'>WCG Fetch</router-link> 
       </div>
@@ -23,7 +23,7 @@ export default {
   name: 'app',
   computed:{
     isManage(){
-      var patt = new RegExp('manage');
+      var patt = new RegExp('management');
       return patt.test(this.$route.path);
     }
   },
