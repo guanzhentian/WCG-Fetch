@@ -1,4 +1,5 @@
 <template>
+<div>
 <transition-group name="change" tag="div" mode="out-in">
 	<div class="basic" :key='1' v-if="login">
 		<div class="content center-block" >
@@ -35,29 +36,23 @@
 			<div class="row spying">
 				<p style="font-size:25px">正在爬取的爬虫</p>
 				<div class="col-md-3 oneBlock" v-for="(item,index) in doingData">
-					<div class="hold" >
-						<p @mouseover="change(index)">时间：{{item.time}}</p>
+					<div class="hold"  @click="setMessage(item)">
+						<p>时间：{{item.time}}</p>
 						<p>网址: {{item.url}}</p>
-					</div>
-					<div class="shadow" v-if=" shadow[index] " @mouseout="change(index)">
-						<p class="text-center">查看详情</p>
 					</div>
 				</div>
 			</div>
 			<div class="row" >
 				<p style="font-size:25px">等待爬取的爬虫</p>
 				<div class="col-md-3 oneBlock" v-for="(item,index) in waitData">
-					<div class="hold">						
+					<div class="hold" @click="setMessage(item)">						
 						<p>时间：{{item.time}}</p>
 						<p>网址: {{item.url}}</p>
-					</div>
-					<div class="shadow" v-show="shadow[doingData.length+index]">
-						<p class="text-center">查看详情</p>
 					</div>
 				</div>
 				<div class="col-md-3 oneBlock">
 					<router-link tag="a" :to="{path:'/setSpider'}">
-						<div class="hold addHold">
+						<div class="hold addHold" >
 							<p class="text-center">添加</p>
 							<div class="center-block" style="width:41px">
 								<img src="../assets/png1.png" >
@@ -67,23 +62,29 @@
 				</div>
 			</div>
 			<div class="row" >
-				<p style="font-size:25px">爬取完成的爬虫</p>
-				<div class="col-md-3 oneBlock" v-for="(item,index) in successData">
-					<div class="hold">
+				<p style="font-size:25px">爬取完成的爬虫 <span class="spanText text-muted" v-if="successData.length > 4" @click="showAll = !showAll">显示全部</span></p>
+
+				<div class="col-md-3 oneBlock" v-for="(item,index) in displaySuccessData">
+					<div class="hold"  @click="setMessage(item)">
 						<p>时间：{{item.time}}</p>
 						<p>网址: {{item.url}}</p>
-					</div>
-					<div class="shadow" v-show="shadow[doingData.length+waitData.length+index]">
-						<p class="text-center">查看详情</p>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </transition-group>
+	<transition name="detail" :key="3" tag="div">
+		<detail :data='message' :key="43"  v-show="isShowDetail" @closeDetail='closeDetail'></detail>
+	</transition>
+</div>
 </template>
 <script type="text/javascript">
+import detail from './detail'
 	export default {
+		components:{
+			detail
+		},
 		computed:{
 			enableLogin(){
 				var  patt = new RegExp(' ','g');
@@ -95,6 +96,20 @@
 				{
 					return false
 				}
+			},
+			displaySuccessData(){
+				if(this.waitData.length > 4)
+				{
+					if(this.showAll)
+					{
+						return this.waitData
+					}else
+					{
+						return this.waitData.slice(0,4);
+					}
+				}else{
+					return this.waitData
+				}
 			}
 		},
 		data(){
@@ -105,7 +120,10 @@
 				successData:[],
 				waitData:[],
 				doingData:[],
-				shadow:[]
+				shadow:[],
+				showAll:false,
+				message:{},
+				isShowDetail:false
 			}
 		},
 		methods:{
@@ -126,6 +144,14 @@
 				this.shadow[index] = !this.shadow[index];
 				this.shadow.splice(2,0);
 				console.log(this.shadow);
+			},	
+			setMessage(item)
+			{
+				this.message = item;
+				this.isShowDetail = true;
+			},
+			closeDetail(){
+				this.isShowDetail = false;
 			}
 		},
 		mounted(){
@@ -145,7 +171,7 @@
 				length--;
 			}while(length > 0)
 			
-		}
+		},
 	}
 </script>
 <style type="text/css" scoped>
@@ -171,7 +197,7 @@
 	h4{
 		color:#1ABC9C;
 	}
-	.change-enter-active,.change-leave-active{
+	.change-enter-active,.change-leave-active,.detail-enter-active,.detail-leave-active{
 		transition:all .4s;
 	}
 	.change-enter{
@@ -180,6 +206,10 @@
 	}
 	.change-leave-to{
 		transform: translateY(300px);
+		opacity: 0;
+	}
+	.detail-enter,.detail-leave-to{
+		transform: translateX(-600px);
 		opacity: 0;
 	}
 	.controlDiv{
@@ -226,6 +256,10 @@
 		padding-top: 50px;
 		background-color: rgba(0,0,0,0.8);
 		color:white;
+		cursor: pointer;
+	}
+	.spanText{
+		font-size: 18px;
 		cursor: pointer;
 	}
 </style>

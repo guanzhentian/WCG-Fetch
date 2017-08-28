@@ -50,7 +50,7 @@
 						<div class="formDetail container">
 							<div class="row content">
 								<h3 class="text-center">请输入限定网址范围的正则表达式</h3>
-								<p class="text-muted text-center">可以加快爬取的速度，可输入多个</p>
+								<p class="text-muted text-center">只会在限定网址范围内爬取，可以加快爬取的速度，可输入多个</p>
 							</div>
 							<div class="content"></div>
 							<transition-group name="dataUrlList" tag="div" >
