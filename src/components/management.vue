@@ -38,7 +38,7 @@
 				<div class="col-md-3 oneBlock" v-for="(item,index) in doingData">
 					<div class="hold"  @click="setMessage(item)">
 						<p>时间：{{item.time}}</p>
-						<p>网址: {{item.url}}</p>
+						<p>网址: {{item.mainUrl}}</p>
 					</div>
 				</div>
 			</div>
@@ -47,7 +47,7 @@
 				<div class="col-md-3 oneBlock" v-for="(item,index) in waitData">
 					<div class="hold" @click="setMessage(item)">						
 						<p>时间：{{item.time}}</p>
-						<p>网址: {{item.url}}</p>
+						<p>网址: {{item.mainUrl}}</p>
 					</div>
 				</div>
 				<div class="col-md-3 oneBlock">
@@ -63,11 +63,10 @@
 			</div>
 			<div class="row" >
 				<p style="font-size:25px">爬取完成的爬虫 <span class="spanText text-muted" v-if="successData.length > 4" @click="showAll = !showAll">显示全部</span></p>
-
 				<div class="col-md-3 oneBlock" v-for="(item,index) in displaySuccessData">
 					<div class="hold"  @click="setMessage(item)">
 						<p>时间：{{item.time}}</p>
-						<p>网址: {{item.url}}</p>
+						<p>网址: {{item.mainUrl}}</p>
 					</div>
 				</div>
 			</div>
@@ -98,17 +97,17 @@ import detail from './detail'
 				}
 			},
 			displaySuccessData(){
-				if(this.waitData.length > 4)
+				if(this.successData.length > 4)
 				{
 					if(this.showAll)
 					{
-						return this.waitData
+						return this.successData
 					}else
 					{
-						return this.waitData.slice(0,4);
+						return this.successData.slice(0,4);
 					}
 				}else{
-					return this.waitData
+					return this.successData
 				}
 			}
 		},
@@ -120,7 +119,6 @@ import detail from './detail'
 				successData:[],
 				waitData:[],
 				doingData:[],
-				shadow:[],
 				showAll:false,
 				message:{},
 				isShowDetail:false
@@ -128,23 +126,12 @@ import detail from './detail'
 		},
 		methods:{
 			submit(){
-				//api put name password
-				
+				//api put name password			
 				if(this.name == "test" && this.password == "test")
 				{
 					this.login = false;
 				}
 			},
-			test(){
-				alert('yes');
-			},
-			change(index)
-			{
-				console.log(this.shadow[index] );
-				this.shadow[index] = !this.shadow[index];
-				this.shadow.splice(2,0);
-				console.log(this.shadow);
-			},	
 			setMessage(item)
 			{
 				this.message = item;
@@ -157,20 +144,103 @@ import detail from './detail'
 		mounted(){
 			var data = [{
 				time:'2017/8/25 15:40',
-				url:'baidu.com'
+				mainUrl:'baidu.com',
+				method:"chrome",
+				detailUrl:"test-detailUrl.com",
+				dataUrl:["\\test\\","\\test2\\","\\test3\\"],
+				attr:[{
+					name:"test",
+					value:"testValue"
+				},{
+					name:"test2",
+					value:"testValue2"
+				},{
+					name:"test3",
+					value:"testValue3"
+				}]
 			},{
 				time:'2017/8/25 15:40',
-				url:'google.com'
+				mainUrl:'google.com',
+				method:"chrome",
+				detailUrl:"test-detailUrl.com",
+				dataUrl:["\\test\\"],
+				attr:[{
+					name:"test",
+					value:"testValue"
+				}]
 			}];
-			this.successData = data;
-			this.waitData = data;
-			this.doingData = data;
-			var length = this.successData.length + this.waitData.length+this.doingData.length;
-			do{
-				this.shadow.push(true);
-				length--;
-			}while(length > 0)
+			var data1 = [{
+				time:'2017/8/25 15:40',
+				mainUrl:'baidu.com',
+				method:"chrome",
+				detailUrl:"test-detailUrl.com",
+				dataUrl:["\\test\\","\\test2\\","\\test3\\"],
+				attr:[{
+					name:"test",
+					value:"testValue"
+				},{
+					name:"test2",
+					value:"testValue2"
+				},{
+					name:"test3",
+					value:"testValue3"
+				}]
+			},{
+				time:'2017/8/25 15:40',
+				mainUrl:'google.com',
+				method:"chrome",
+				detailUrl:"test-detailUrl.com",
+				dataUrl:["\\test\\"],
+				attr:[{
+					name:"test",
+					value:"testValue"
+				}]
+			}];
+			var data2 = [{
+				time:'2017/8/25 15:40',
+				mainUrl:'baidu.com',
+				method:"chrome",
+				detailUrl:"test-detailUrl.com",
+				dataUrl:["\\test\\","\\test2\\","\\test3\\"],
+				attr:[{
+					name:"test",
+					value:"testValue"
+				},{
+					name:"test2",
+					value:"testValue2"
+				},{
+					name:"test3",
+					value:"testValue3"
+				}]
+			},{
+				time:'2017/8/25 15:40',
+				mainUrl:'google.com',
+				method:"chrome",
+				detailUrl:"test-detailUrl.com",
+				dataUrl:["\\test\\"],
+				attr:[{
+					name:"test",
+					value:"testValue"
+				}]
+			}];
 			
+			this.successData = data1;
+			for(var i = 0 ;i<this.successData.length;i++)
+			{
+				this.successData[i]['status'] = 'success';
+			}
+			
+			this.waitData = data2;
+			for(var i = 0 ;i<this.waitData.length;i++)
+			{
+				this.waitData[i]['status'] = 'wait';
+			}
+			
+			this.doingData = data;
+			for(var i = 0 ;i<this.doingData.length;i++)
+			{
+				this.doingData[i]['status'] = 'doing';
+			}
 		},
 	}
 </script>
@@ -243,20 +313,6 @@ import detail from './detail'
 	}
 	.addHold:hover{
 		color:#1ABC9C;
-	}
-	.shadow{
-		position: absolute;
-		top:0;
-		left:0;
-		margin-right:15px;
-		margin-left: 15px;
-		width: 90%;
-		height: 100%;	
-		padding: 20px;
-		padding-top: 50px;
-		background-color: rgba(0,0,0,0.8);
-		color:white;
-		cursor: pointer;
 	}
 	.spanText{
 		font-size: 18px;

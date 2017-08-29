@@ -6,6 +6,7 @@ import getData from '@/components/getData'
 import anlysis from '@/components/anlysis'
 import about from '@/components/about'
 import management from '@/components/management'
+import notFount from '@/components/notFount'
 
 Vue.use(Router)
 
@@ -40,6 +41,10 @@ export default new Router({
       path:'/management',
       name:'management',
       component:management
+    },
+    {
+      path:'*',
+      component:notFount
     }
   ]
 })

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header class="navbar navbar-inverse navbar-fixed-top" id="header"  v-show="!isManage">
+    <header class="navbar navbar-inverse navbar-fixed-top" id="header"  v-show="isManage">
       <div class="navbar-header">
         <router-link tag="a" class="navbar-brand" :to='{path:"/"}'>WCG Fetch</router-link> 
       </div>
@@ -11,7 +11,7 @@
       </div>
     </header>
       <router-view></router-view>
-    <div class="container footer">
+    <div class="container footer" v-if="isNotFound">
       <p class="text-center">Copyright©2017  <a href="mailto:695663045@qq.com">@Gzt</a></p>
     </div>
   </div>
@@ -23,7 +23,11 @@ export default {
   name: 'app',
   computed:{
     isManage(){
-      var patt = new RegExp('management');
+      var patt = new RegExp('^/setSpider$|^/getData$|^/anlysis$|^/about$|^/$');
+      return patt.test(this.$route.path);
+    },
+    isNotFound(){
+      var patt = new RegExp('^/setSpider$|^/getData$|^/anlysis$|^/about$|^/$|^/management$');
       return patt.test(this.$route.path);
     }
   },
