@@ -77,7 +77,7 @@
 					<div class="row">
 						<h5 class=" col-md-3">5.输入分析数量</h5>
 						<div class="col-md-3">
-							<input type="text" v-model="chartData.number" @change="checkNumber">
+							<input type="text" v-model="chartData.number" @change="checkNumber" @keyup.enter = "creatChart">
 						</div>
 						<p class="text-muted">(当前可用数据{{curNumber}})</p>
 					</div>

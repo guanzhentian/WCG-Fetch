@@ -73,8 +73,8 @@
 		</div>
 	</div>
 </transition-group>
-	<transition name="detail" :key="3" tag="div">
-		<detail :data='message' :key="43"  v-show="isShowDetail" @closeDetail='closeDetail'></detail>
+	<transition name="detail" tag="div">
+		<detail :data='message'  v-show="isShowDetail" @closeDetail='closeDetail'></detail>
 	</transition>
 </div>
 </template>
