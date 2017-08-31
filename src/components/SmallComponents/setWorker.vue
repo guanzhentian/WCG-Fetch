@@ -92,7 +92,7 @@
 		}
 	}
 </script>
-<style type="text/css">
+<style type="text/css" scoped>
 	.row{
 		margin-top: 20px;
 		border-bottom: 1px solid #ccc;
