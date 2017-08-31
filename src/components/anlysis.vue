@@ -13,7 +13,7 @@
 		
 		<div class="content">
 			<transition name="componentChange" mode="out-in">
-				<component :is="currentView" :selectId='selectValue.id'></component>
+				<component :is="currentView" :selectId='selectValue.id' :basicData = "showData"></component>
 			</transition>	
 		</div>
 		<selectSpider @onSelect="select" v-if="isSelectShow"></selectSpider>
@@ -69,7 +69,6 @@ import axios from 'axios'
 						id:item.id
 				})
 				.then((res)=>{
-					console.log(res.data);
 					this.showData = res.data;		
 				})
 				.catch(function(err){

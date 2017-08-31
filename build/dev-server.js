@@ -94,13 +94,13 @@ app.post('/api/test',function(req,res){
 
 app.get('/api/getDoSpider',function(req,res){
   var getInputData = [{
-        id:1,
+        'id':1,
         'mainUrl':'baidu.com'
       },{
-         id:2,
+         'id':2,
         'mainUrl':'taobao.com'
       },{
-         id:3,
+         'id':3,
         'mainUrl':'tamll.com'
       }]
     res.send(getInputData);
@@ -127,6 +127,45 @@ app.post('/api/getAllData',function(req,res){
   }
   res.send(data);
 });
+
+var getSpiderDataNumber = 0;
+app.post('/api/getSpiderData',function(req,res){
+  console.log(req.body.id+'getSpiderData');
+  var data = {
+    'collectUrl':getSpiderDataNumber,
+    'anlysisUrl':getSpiderDataNumber,
+    'dataNumber':getSpiderDataNumber,
+    'attr':[{
+          name:"id",
+          value:""
+        },{
+          name:"time",
+          value:""
+        },{
+          name:"name",
+          value:""
+        },{
+          name:"price",
+          value:""
+        },{
+          name:"content",
+          value:""
+        }]
+  };
+  getSpiderDataNumber++;
+  res.json(data);
+});
+
+app.post('/api/login',function(req,res){
+  console.log(req.body);
+  if(req.body.name == 'testname' && req.body.password == 'testpassword')
+  {
+    res.send({'message':'success'});
+  }else{
+    res.send({'message':'fail'});
+  }
+});
+
 var server = app.listen(port)
 
 module.exports = {

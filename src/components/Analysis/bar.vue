@@ -103,12 +103,16 @@
 <script type="text/javascript">
 	
 	import Chart from 'chart.js/dist/Chart.min.js'
+	import axios from 'axios'
 	export default {
 		name:'bar',
 		props:{
 			selectId:{
 				require:true,
 				type:[String,Number]
+			},
+			basicData:{
+				default:[]
 			}
 		},
 		watch:{
@@ -224,28 +228,7 @@
 				var data  = [];
 				var id = 0 ;
 				var timeIndex = 0;
-				for(var i = 0; i<this.chartData.number;i++)
-				{
-					var testid = id;
-					var time ="2017-8-14 17:"+timeIndex;
-					var name = 'Name'+id;
-					var price = '$'+id;
-					var content = '这是第'+id+'个简介';
-					var mes = {
-						"id":testid,
-						"time":time,
-						"name":name,
-						"price":price,
-						"content":content
-					};
-					id++;
-					timeIndex++;
-					if(id >9)
-					{
-						id = 0;				
-					}
-					data.push(mes);
-				}
+				data = this.basicData.slice(0,this.chartData.number);
 				
 				//remove data
 
@@ -415,28 +398,19 @@
 			}
 		},
 		mounted(){
-			var getInputData  = {
-				'attr':[{
-					name:"id",
-					value:""
-				},{
-					name:"time",
-					value:""
-				},{
-					name:"name",
-					value:""
-				},{
-					name:"price",
-					value:""
-				},{
-					name:"content",
-					value:""
-				}]
-			}
+			axios.post('/api/getSpiderData',{
+				id:this.selectId
+			})
+			.then((res)=>{
+				this.inputData = res.data.attr;
+			})
+			.catch((err)=>{
+				console.error(err)
+			});
 			// getInputData api
-			this.inputData = getInputData.attr;
+			//this.inputData = getInputData.attr;
 			// getNumber api
-			this.curNumber = 500;
+			this.curNumber = this.basicData.length;
 		}
 	}
 </script>

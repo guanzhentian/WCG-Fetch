@@ -47,6 +47,8 @@
 </template>
 <script type="text/javascript">
 	import selButton from '../SmallComponents/selectButton'
+	import axios from 'axios'
+	
 	export default {
 		name:'kind',
 		components:{
@@ -60,13 +62,16 @@
 				pickData:[''],
 				value:[''],
 				showData:[],
-				isMohu:true
+				isMohu:true,
 			}
 		},
 		props:{
 			selectId:{
 				type:[String,Number],
 				require:true
+			},
+			basicData:{
+				default:[]
 			}
 		},
 		methods:{
@@ -109,7 +114,7 @@
 			},
 			anlysisData(){
 				//api getData()
-				var unchangeData = this.getData()
+				var unchangeData = this.basicData.slice(0,this.basicData.length);
 				for(var k  = 0; k<this.pickData.length; k++)
 				{
 					var j = 0;
@@ -130,58 +135,24 @@
 						}
 					}while(j<unchangeData.length)
 				}
-
 				this.showData = unchangeData;
 				this.finished = true;
-
 			},
 			setIfMohu(bool){
 				this.isMohu = bool;
 			},
-			getData(){
-				var id = 0;
-				var data = [];
-				for(var i = 0;i<365;i++)
-				{
-					var testid = id;
-					var time ="2017-8-14 17:21";
-					var name = 'Name'+id;
-					var price = '$'+id;
-					var content = '这是第'+id+'个简介';
-					var mes = {
-						"id":testid,
-						"time":time,
-						"name":name,
-						"price":price,
-						"content":content
-					};
-					data.push(mes);
-					id++;
-				} 
-				return data;
-			}
 		},
 		mounted(){
-			var getInputData  = {
-				'attr':[{
-					name:"id",
-					value:""
-				},{
-					name:"time",
-					value:""
-				},{
-					name:"name",
-					value:""
-				},{
-					name:"price",
-					value:""
-				},{
-					name:"content",
-					value:""
-				}]
-			}
+			axios.post('/api/getSpiderData',{
+				id:this.selectId
+			})
+			.then((res)=>{
+				this.inputData = res.data.attr;
+			})
+			.catch((err)=>{
+				console.error(err)
+			});
 			//api getInputData
-			this.inputData = getInputData.attr;
 		}
 	}
 </script>

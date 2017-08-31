@@ -80,6 +80,7 @@
 </template>
 <script type="text/javascript">
 import detail from './detail'
+import axios from 'axios'
 	export default {
 		components:{
 			detail
@@ -126,11 +127,21 @@ import detail from './detail'
 		},
 		methods:{
 			submit(){
-				//api put name password			
-				if(this.name == "test" && this.password == "test")
-				{
-					this.login = false;
-				}
+				//api put name password	
+				axios.post('/api/login',{
+					name:this.name,
+					password:this.password
+				}).then((res)=>{
+					if(res.data.message == 'success')
+					{
+						alert("登录成功！");
+						this.login = false;
+					}else{
+						alert("账号或者密码错误，请重新填写");
+					}
+				}).catch((err)=>{
+					console.error(err);
+				});
 			},
 			setMessage(item)
 			{

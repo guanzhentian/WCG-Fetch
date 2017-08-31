@@ -92,10 +92,9 @@ import axios from 'axios'
 				this.selectValue = item;
 				this.isSelectShow = false;
 				axios.post('/api/getAllData',{
-						id:item
+						id:item.id
 				})
 				.then((res)=>{
-					console.log(res.data);
 					this.showData = res.data;
 					var number = this.showData.length;
 					this.pageNumber = Math.ceil(number/48);
