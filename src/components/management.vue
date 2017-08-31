@@ -115,7 +115,7 @@ import detail from './detail'
 			return{
 				name:"",
 				password:"",
-				login:false,
+				login:true,
 				successData:[],
 				waitData:[],
 				doingData:[],
