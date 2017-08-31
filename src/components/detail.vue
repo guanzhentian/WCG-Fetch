@@ -389,7 +389,7 @@ import getData from './getData'
 				//api
 			},
 			watchData(){
-				
+				this.oldData.length = 0;
 				this.oldData.push(this.data);	
 				this.isWatchData = true;
 			}
