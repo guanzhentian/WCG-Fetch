@@ -34,7 +34,7 @@
    	</header>
 		<div class="container">
 			<div class="row spying">
-				<p style="font-size:25px">正在爬取的爬虫</p>
+				<p style="font-size:25px" class="text-warning">正在爬取的爬虫</p>
 				<div class="col-md-3 oneBlock" v-for="(item,index) in doingData">
 					<div class="hold"  @click="setMessage(item)">
 						<p>时间：{{item.time}}</p>
@@ -43,7 +43,7 @@
 				</div>
 			</div>
 			<div class="row" >
-				<p style="font-size:25px">等待爬取的爬虫</p>
+				<p style="font-size:25px" class="text-info">等待爬取的爬虫</p>
 				<div class="col-md-3 oneBlock" v-for="(item,index) in waitData">
 					<div class="hold" @click="setMessage(item)">						
 						<p>时间：{{item.time}}</p>
@@ -61,8 +61,8 @@
 					</router-link>
 				</div>
 			</div>
-			<div class="row" >
-				<p style="font-size:25px">爬取完成的爬虫 <span class="spanText text-muted" v-if="successData.length > 4" @click="showAll = !showAll">显示全部</span></p>
+			<div>
+				<p style="font-size:25px" class="text-success">爬取完成的爬虫 <span class="spanText text-muted" v-if="successData.length > 4" @click="showAll = !showAll">显示全部</span></p>
 				<div class="col-md-3 oneBlock" v-for="(item,index) in displaySuccessData">
 					<div class="hold"  @click="setMessage(item)">
 						<p>时间：{{item.time}}</p>
@@ -317,5 +317,10 @@ import detail from './detail'
 	.spanText{
 		font-size: 18px;
 		cursor: pointer;
+	}
+	.row{
+		margin-top: 20px;
+		border-bottom: 1px solid #ccc;
+		padding-bottom:20px;
 	}
 </style>
