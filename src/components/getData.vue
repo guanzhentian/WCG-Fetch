@@ -18,7 +18,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr v-for="item in showData">
+							<tr v-for="item in realShow">
 								<td v-for="detail in item">{{detail}}</td>
 							</tr>
 						</tbody>
@@ -30,7 +30,7 @@
 				<div class="col-xs-offset-3">
 					<ul class="pagination">
 						<li ><a class="fui-arrow-left" @click="changeMultiple(-1)"></a></li>
-						<li v-for="(n,index) in endNumber"><a :class="{'active':index == curIndex }" @click="getDataFromIndex(index)">{{n+(curMultiple-1)*10}}</a></li>
+						<li v-for="(n,index) in endNumber"><a :class="{'active':index == curIndex }" @click="changeShow(index)">{{n+(curMultiple-1)*10}}</a></li>
 						<li><a class="fui-arrow-right" @click="changeMultiple(+1)"></a></li>
 					</ul>
 				</div>
@@ -41,6 +41,7 @@
 </div>
 </template>
 <script type="text/javascript">
+import axios from 'axios'
 	import selectSpider from './selectSpider'
 
 	export default {
@@ -61,7 +62,7 @@
 				curMultiple:1,
 				isShow:false,
 				isSelectShow:true,
-				selectId:null
+				selectValue:null
 			}
 		},
 		computed:{
@@ -73,51 +74,47 @@
 			},
 			multipleNumber(){
 				return Math.ceil(this.pageNumber/10)
-			}
+			},
+			realShow(){
+				if(this.curIndex+(this.curMultiple-1)*10+48 > this.showData.length)
+				{
+					return this.showData.slice(this.curIndex*48+(this.curMultiple-1)*10*48,this.showData.length)
+				}
+				return this.showData.slice(this.curIndex*48+(this.curMultiple-1)*10*48,this.curIndex*48+(this.curMultiple-1)*10*48+48)
+			},
+
 		},
 		methods:{
-			select(id){
-				this.selectId = id;
+			changeShow(val){
+				this.curIndex = val;
+			},
+			select(item){
+				this.selectValue = item;
 				this.isSelectShow = false;
-			},
-			getData(id){
-				var testid = id;
-				var time ="2017-8-14 17:21";
-				var name = 'Name'+id;
-				var price = '$'+id;
-				var content = '这是第'+id+'个简介';
-				var mes = {
-					"id":testid,
-					"time":time,
-					"name":name,
-					"price":price,
-					"content":content
-				};
-				return mes;
-			},
-			getNumber(){
-				return 48*58;
-			},
-			getDataFromIndex(index){
-				if(typeof index != 'undefined' && index != null)
-					this.curIndex = index;
-				var newData = [];
-				for(var i = 0;i<48;i++)
-				{
-					var mes = this.getData(this.curIndex+48*this.curIndex+(this.curMultiple-1)*10+i);
-					newData.push(mes);
-				}
-				this.showData = newData;
-			},
+				axios.post('/api/getAllData',{
+						id:item
+				})
+				.then((res)=>{
+					console.log(res.data);
+					this.showData = res.data;
+					var number = this.showData.length;
+					this.pageNumber = Math.ceil(number/48);
+				
+				})
+				.catch(function(err){
+					console.error(err);
+				})
+			},	
 			changeMultiple(flag)
 			{
+				console.log(this.endNumber,this.multipleNumber)
 				if(flag>0)
 				{
 					if (this.curMultiple < this.multipleNumber)
 					{
 						
 						this.curMultiple++;
-						this.getDataFromIndex(0);
+						this.curIndex = 0;
 					}
 				}
 				else
@@ -125,7 +122,7 @@
 					if (this.curMultiple > 1)
 					{
 						this.curMultiple -- ;
-						this.getDataFromIndex(0);
+						this.curIndex = 0;
 					}
 				}
 			}
@@ -138,12 +135,8 @@
 					this.isSelectShow = false;
 					this.pageNumber = Math.ceil(this.transData.length/48);
 					this.showData = this.transData;
-				}else{
-					var number = this.getNumber();
-					this.pageNumber = Math.ceil(number/48);
-					this.getDataFromIndex(0);
 				}
-				
+
 			});
 		}
 	}

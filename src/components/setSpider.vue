@@ -54,9 +54,9 @@
 							</div>
 							<div class="content"></div>
 							<transition-group name="dataUrlList" tag="div" >
-								<div class="row" v-for="(item,index) in inputData.dataUrl" v-bind:key="item">
+								<div class="row" v-for="(item,index) in inputData.dataUrl" v-bind:key="index">
 									<div class="form-group  col-xs-8 col-xs-offset-2">
-										<input type="url" :name="'dataUrl'+(index+1)" class="form-control" placeholder="请输入网址"  v-model ="inputData.dataUrl[index]">
+										<input type="url" class="form-control" placeholder="请输入网址"  v-model ="inputData.dataUrl[index]">
 									</div>
 								</div>
 							</transition-group>
@@ -90,15 +90,15 @@
 									<div class="row">
 										<div class="center-block" style="width:80px;">
 											<transition-group name="span">
-											<span class="fui-plus aSpan" v-if="inputData.attr.length<5" @click="inputData.attr.push('')" :key='1'></span>
-											<span class="fui-trash aSpan" v-if="inputData.attr.length>1" @click="inputData.attr.pop()" :key='2'></span>
+											<span class="fui-plus aSpan" v-if="inputData.attr.length<5" @click="attrChange(1)" :key='1'></span>
+											<span class="fui-trash aSpan" v-if="inputData.attr.length>1" @click="attrChange(0)" :key='2'></span>
 											</transition-group>
 										</div>
 									</div>
 								</div>	
 							</div>
 							<div class="submit">
-								<span class="btn btn-primary">提交</span>
+								<span class="btn btn-primary" @click="submitMessage">提交</span>
 							</div>
 						</div>
 						<div class="fixedRight">
@@ -117,6 +117,7 @@
 </template>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
 <script type="text/javascript">
+import axios from 'axios'
 	export default {
 		name:"setSpider",
 		data(){
@@ -218,9 +219,7 @@
 						}
 						},5);
 					}
-				}
-				
-				
+				}	
 			},
 			setTarget(index,data){
 				if(index > this.curActive)
@@ -239,7 +238,6 @@
 				}
 
 				this.curActive = index;
-
 			},
 			changeSwitch(){
 				this.switchShow = !this.switchShow;
@@ -247,6 +245,74 @@
 					this.inputData.method="request";
 				else
 					this.inputData.method="chrome";
+			},
+			attrChange(val)
+			{
+				if(val>0)
+				{
+					var data = {
+						name:'',
+						value:''
+					}
+					this.inputData.attr.push(data);
+				}else{
+					this.inputData.attr.pop();
+				}
+			},
+			checkData(){
+				var patt = new RegExp(" ",'g');
+				this.inputData.mainUrl = this.inputData.mainUrl.replace(patt,'');
+				if( this.inputData.mainUrl == '')
+				{
+					alert("请输入爬取网址");
+					return false
+				}
+				this.inputData.detailUrl = this.inputData.detailUrl.replace(patt,'');
+				if( this.inputData.detailUrl == '')
+				{
+					alert("请输入详情页网址");
+					return false
+				}
+				for(var i in this.inputData.dataUrl)
+				{
+					if(this.inputData.dataUrl[i].replace(patt,'') == '')
+					{
+						alert('有空的限制正则表达式栏未填入，请填写！');
+						return false
+					}
+				}
+				for(var i in this.inputData.attr)
+				{	
+					console.log(typeof this.inputData.attr[i].name);
+					if(this.inputData.attr[i].name.replace(patt,'') == '')
+					{
+						alert("请输入属性名称");
+						return false
+					}
+					if(this.inputData.attr[i].value.replace(patt,'') == '')
+					{
+						alert("请输入属性对应的XPATH");
+						return false
+					}
+				}
+				return true
+			},
+			submitMessage(){
+				if(this.checkData())
+				{
+					var date = new Date();
+					this.inputData.time = date.toLocaleString();
+					this.inputData.status = 'wait';
+					axios.post('/api/test',this.inputData)
+					.then(function(res){
+						alert("提交成功！");
+						window.location.reload();
+					})
+					.catch(function(error){
+						console.error(error);
+					});
+				}
+				
 			}
 		},
 		mounted(){

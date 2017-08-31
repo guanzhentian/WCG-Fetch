@@ -10,7 +10,7 @@
             <h3>简单 &nbsp;&nbsp;&nbsp;  结构化  &nbsp;&nbsp; 定制化</h3>
             <router-link :to="{path:'/setSpider'}"class="col-xs-12  btn btn-info startBtn">开始定制爬虫</router-link>
             <div class="watchA">
-              <a href=""  class="text-muted"><span class="fui-play"></span>观看介绍视频</a>
+              <a   class="text-muted" @click="isShowVideo = true"><span class="fui-play" ></span>观看介绍视频</a>
             </div>
         </div>
         </div>
@@ -68,6 +68,13 @@
       
     </div>
   </div>
+  <div class="videoPlayer" v-if="isShowVideo">
+    <button class="btn btn-danger selfBtn" @click="isShowVideo = false">关闭</button>
+    <div class="center-block video">
+      <iframe height='498' width='510' src='http://player.youku.com/embed/XMjg1Njg4MTE1Mg==' frameborder='0' allowfullscreen autoplay></iframe>
+    </div>
+    
+  </div>
 </div>
 </template>
 
@@ -76,7 +83,7 @@ export default {
   name: 'index',
   data () {
     return {
-      
+      isShowVideo:false
     }
   }
 }
@@ -136,5 +143,27 @@ export default {
 }
 .teach h6 {
   margin-top:80px;
+}
+div.videoPlayer{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-color: rgba(0,0,0,0.4);
+  top:0;
+  left: 0;
+  z-index:100;
+}
+.video{
+    width: 510px;
+    position: relative;
+    top:20%;
+}
+.selfBtn{
+  width: 100px;
+  cursor: pointer;
+  z-index: 202;
+  position: absolute;
+  bottom:80%;
+  left:80%;
 }
 </style>

@@ -13,7 +13,7 @@
 		
 		<div class="content">
 			<transition name="componentChange" mode="out-in">
-				<component :is="currentView" :selectId='selectId'></component>
+				<component :is="currentView" :selectId='selectValue.id'></component>
 			</transition>	
 		</div>
 		<selectSpider @onSelect="select" v-if="isSelectShow"></selectSpider>
@@ -25,6 +25,10 @@ import bar from './Analysis/bar'
 import kind from './Analysis/kind'
 import c2048 from './Analysis/c2048'
 import selectSpider from './selectSpider'	
+
+import axios from 'axios'
+
+
 	export default {
 		name:"anlysis",
 		components:{
@@ -37,7 +41,6 @@ import selectSpider from './selectSpider'
 		data(){
 			return{
 				isSelectShow:true,
-				selectId:null,
 				currentView:'Process',
 				isShow:true,
 				pathData:[{
@@ -53,14 +56,26 @@ import selectSpider from './selectSpider'
 				{
 					path:'c2048',
 					text:'2048'
-				}]
+				}],
+				showData:[],
+				selectValue:{}
 			}
 		},
 		methods:{
-			select(id){
-				this.selectId = id;
+			select(item){
+				this.selectValue = item;
 				this.isSelectShow = false;
-			},
+				axios.post('/api/getAllData',{
+						id:item.id
+				})
+				.then((res)=>{
+					console.log(res.data);
+					this.showData = res.data;		
+				})
+				.catch(function(err){
+					console.error(err);
+				})
+			},	
 		}
 	}
 </script>

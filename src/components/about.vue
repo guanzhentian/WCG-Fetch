@@ -38,7 +38,10 @@
 	</div>
 </template>
 <script type="text/javascript">
-	
+	export default{
+		methods:{
+		}
+	}
 </script>
 <style type="text/css" scoped>
 	.basic{

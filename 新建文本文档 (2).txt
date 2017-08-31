@@ -1,0 +1,55 @@
+保存爬虫信息
+	添加：ID
+	添加：Status（状态,'wait','doing','success'）
+	添加：endTime(爬虫结束时间）
+
+爬虫信息存放应为数组格式
+
+每个爬虫有对应的数据库
+
+返回数据的格式都应该为 ： [{ },{ },{ }]
+
+API设计
+	GET 获取所有的爬虫信息 /api/getSpider
+	
+	POST 上传新的爬虫信息 /api/setSpider
+		发送数据格式：{
+				mainUrl:"",
+				method:"chrome", 或者 ‘request’
+				detailUrl:"",
+				dataUrl:[""],
+				attr:[{
+					name:"",
+					value:""
+				}]，
+				startTime:''
+			   }
+	
+		请反馈消息
+
+	GET 获取正在爬取的爬虫信息 /api/getDoingSpider
+
+	POST 根据正在爬取的爬虫ID号获取爬取数据  /api/getDataFormId
+		发送数据格式{
+				id:0
+			}
+	
+	POST 根据正在爬取的爬虫ID号获取爬取信息 /api/getDetailFormId
+		发送数据格式{
+				id:0
+			}
+
+		返回信息中应包含，已收集URL，已分析URL，已获取目标数据
+
+
+	POST 发送登录信息 /api/login
+
+		发送数据格式{
+			name:'',
+			password:''
+		}
+		请反馈消息
+
+	
+html css js vue vue-cli falt-ui bootstrap chart.js express axios
+	

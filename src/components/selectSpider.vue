@@ -3,7 +3,7 @@
 	<div class="select">
 		<p class="text-center">选择爬虫</p>
 		<select class="Select" v-model="selectValue">
-			<option v-for="item in inputData">
+			<option v-for="item in inputData" :value="item">
 				{{item.mainUrl}}
 			</option>
 		</select>
@@ -12,6 +12,7 @@
 </div>
 </template>
 <script type="text/javascript">
+import axios from 'axios'
 	export default {
 		data(){
 			return{
@@ -32,23 +33,13 @@
 			}
 		},
 		mounted(){
-			var getInputData = [{
-				'mainUrl':'baidu.com'
-			},{
-				'mainUrl':'taobao.com'
-			},{
-				'mainUrl':'tamll.com'
-			}]
-			//api getInputData
-			if(getInputData.length > 0)
-			{
-				this.inputData = getInputData;
-			}else{
-				alert("没有正在运行的爬虫！");
-				this.$router.push('/setSpider');
-			}
-			
-
+			axios.get('/api/getDoSpider')
+			.then((res)=>{
+				this.inputData = res.data;
+			})
+			.catch(function(err){
+				console.error(err);
+			})
 		}
 	}
 </script>
