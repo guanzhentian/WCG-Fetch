@@ -105,30 +105,7 @@
 								</div>
 							</transition>
 						</div>
-<!-- 						<div class="row">
-							<label class="col-md-2 col-md-offset-4">
-								<button class="btn btn-primary" @click="setWorker(1)">添加Worker</button>
-							</label>
-							<label class="col-md-2">
-								<button class="btn btn-danger" @click="setWorker(0)">删除Worker</button>
-							</label>
-						</div>
-						<transition-group name="showFormRight" >
-							<div class="row" v-if="selectWorker.length > 0" v-for="n in selectWorker.length" :key="n">
-								<div class="col-md-offset-2 col-md-2">
-									选择爬虫
-								</div>
-								<div class="col-md-2">
-									<select v-model="selectWorker[n-1]">
-										<option v-for="op in workerData" v-show="selectWorker.indexOf(op) < 0" :value="op">
-											{{op.id}}
-										</option>
-									</select>	
-								</div>
-								{{selectWorker[n-1].value}}
-							</div>
-						</transition-group> -->
-						<setWorker :workerData ="workerData" @update="workerFinished"></setWorker>
+						<setWorker :workerData ="workerData" @submit="workerFinished"></setWorker>
 						<div class="row">
 							<label class=" col-md-4">
 								是否强制执行(将其他worker工作停止)
@@ -168,6 +145,14 @@
 						</div>	
 					</div>
 					<div class="row">
+						<div class="col-md-4">
+							是否为强制执行：
+						</div>
+						<div class="col-md-4">
+							{{task.isForce}}
+						</div>
+					</div>
+					<div class="row">
 						<div class="col-md-2">
 							Worker详细信息:
 						</div>
@@ -184,14 +169,22 @@
 						</div>
 					</transition>
 					<div class="row">
-						<button class="col-md-2 btn btn-warning" style="color:#383838">修改Worker配置</button>
-						<button class="col-md-offset-1 col-md-2 btn btn-danger">结束爬取</button>
+						<button class="col-md-2 btn btn-warning" style="color:#383838" @click="isShowChangeWorker = true">修改Worker配置</button>
+						<button class="col-md-offset-1 col-md-2 btn btn-danger" @click="endSpider">结束爬取</button>
 					</div>
 					<transition name="showFormRight">
-						<div class="row">
-							<button class="btn btn-danger btn-sm closeBtn col-md-2 col-md-offset-9">关闭</button>
+						<div class="row" v-if="isShowChangeWorker">
+							<div class="col-md-12 text-center">
+								Worker配置
+							</div>
 							<div class="col-md-12">
-								当前Worker配置
+								<setWorker :workerData ="workerData" @submit="workerFinished" :hasWorker="task.selectWorker"></setWorker>
+							</div>
+							<div class="col-md-offset-4 col-md-2">
+								<button class="btn btn-warning " @click="resetWorker">修改</button>
+							</div>
+							<div class="col-md-2">
+								<button class="btn btn-danger" @click="isShowChangeWorker = false">取消修改</button>	
 							</div>
 						</div>
 					</transition>
@@ -201,7 +194,40 @@
 			<div class="panel panel-success" v-if="data.status == 'success'">
 				<div class="panel-heading">
 					<h3 class="panel-title">爬虫配置</h3>
-
+				</div>
+				<div class="container">
+					<div class="row">
+						<div class="col-md-4">
+							起始爬取时间为：
+						</div>
+						<div class="col-md-4">
+							{{task.startTime}}
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							结束爬取时间为：
+						</div>
+						<div class="col-md-4">
+							{{task.endTime}}
+						</div>	
+					</div>
+					<div class="row">
+						<div class="col-md-4">
+							是否为强制执行：
+						</div>
+						<div class="col-md-4">
+							{{task.isForce}}
+						</div>
+					</div>
+					<div class="row">
+						<button class="btn btn-primary col-md-offset-4 col-md-4" @click="watchData">查看爬取数据</button>
+					</div>
+					<transition name="showFormRight">
+						<div class="row" v-if="isWatchData">
+							<getData :transData='oldData' class="col-md-11" ></getData>
+						</div>
+					</transition>
 				</div>
 			</div>
 		</div>
@@ -211,6 +237,8 @@
 import selectButton from './SmallComponents/selectButton'
 import detailWorker from './SmallComponents/detailWorker'
 import setWorker from './SmallComponents/setWorker'
+import getData from './getData'
+
 	export default{
 		props:{
 			data:{
@@ -220,14 +248,15 @@ import setWorker from './SmallComponents/setWorker'
 		},
 		watch:{
 			data:function(){
-				if(this.data.status == 'doing')
+				if(this.data.status == 'doing' || this.data.status == 'success')
 				{
 					this.task = {
 						startTime:"2017-8-30T14:12",
 						endTime: "2017-8-30T15:12",
+						isForce:true,
 						selectWorker:[{
-							id:'1',
-							value:'这是第一个worker'
+							id:'3',
+							value:'这是第三个worker'
 						},{
 							id:'2',
 							value:'这是第二个worker'
@@ -236,12 +265,15 @@ import setWorker from './SmallComponents/setWorker'
 				}
 				this.endTime = null;
 				this.selectWorker = [];
+				this.oldData = [];
+				this.isWatchData = false;
 			}
 		},
 		components:{
 			selectButton,
 			detailWorker,
-			setWorker
+			setWorker,
+			getData
 		},
 		data(){
 			return{
@@ -255,7 +287,10 @@ import setWorker from './SmallComponents/setWorker'
 				isForce:true,
 				isShowDetailWorker:false,
 				showWorker:{},
-				task:{}
+				task:{},
+				isShowChangeWorker:false,
+				oldData:[],
+				isWatchData:false
 			}
 		},
 		methods:{
@@ -276,18 +311,6 @@ import setWorker from './SmallComponents/setWorker'
 				}
 				this.curTime+=time.getHours()+':'+time.getMinutes();
 			},
-			/*setWorker(value)
-			{
-				if(value > 0)
-				{
-					if(this.selectWorker.length < this.workerData.length)
-						this.selectWorker.push('');
-				}else
-				{
-					if(this.selectWorker.length > 0)
-						this.selectWorker.pop();
-				}
-			},*/
 			workerFinished(item){
 				this.selectWorker = item;
 			},
@@ -302,6 +325,12 @@ import setWorker from './SmallComponents/setWorker'
 				}
 				if(this.isShowSetEndTime == true)
 				{
+					console.log(this.endTime);
+					if(this.endTime == null)
+					{
+						alert('请填写结束时间！');
+						return false;
+					}
 					if(this.endTime <= this.startTime)
 					{
 						alert('结束时间有误，请重新填写');
@@ -346,6 +375,23 @@ import setWorker from './SmallComponents/setWorker'
 			changeWorker(){
 				this.isShowDetailWorker = false;
 				this.showWorker = {};
+			},
+			resetWorker(){
+				console.log(this.selectWorker);
+				this.task.selectWorker = [];
+				for(var i in this.selectWorker)
+				{
+					this.task.selectWorker.push(this.selectWorker[i]);
+				}
+				this.isShowChangeWorker = false;
+			},
+			endSpider(){
+				//api
+			},
+			watchData(){
+				
+				this.oldData.push(this.data);	
+				this.isWatchData = true;
 			}
 		},
 		mounted(){
@@ -364,19 +410,19 @@ import setWorker from './SmallComponents/setWorker'
 
 			this.workerData = [{
 				id:'1',
-				value:'只是第一个worker'
+				value:'这是第一个worker'
 			},{
 				id:'2',
-				value:'只是第二个worker'
+				value:'这是第二个worker'
 			},{
 				id:'3',
-				value:'只是第三个worker'
+				value:'这是第三个worker'
 			},{
 				id:'4',
-				value:'只是第四个worker'
+				value:'这是第四个worker'
 			},{
 				id:'5',
-				value:'只是第五个worker'
+				value:'这是第五个worker'
 			}]
 
 			///

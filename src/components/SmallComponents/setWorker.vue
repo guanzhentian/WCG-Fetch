@@ -15,7 +15,7 @@
 			</div>
 			<div class="col-md-2">
 				<select v-model="selectWorker[n-1]">
-					<option v-for="op in workerData" v-show="selectWorker.indexOf(op) < 0" :value="op">
+					<option v-for="op in workerData" v-show="!isFound(selectWorker,op)" :value="op">
 						{{op.id}}
 					</option>
 				</select>	
@@ -34,12 +34,14 @@
 			},
 			hasWorker:{
 				type:Array,
-				dafault:[]
+				default(){
+					return [];
+				}
 			}
 		},
 		watch:{
-			hasWorker:function(){
-				this.selectWorker = hasWorker;
+			selectWorker:function(){
+				this.update();
 			}
 		},
 		data(){
@@ -62,7 +64,31 @@
 			},
 			update(){
 				this.$emit('submit',this.selectWorker);
-			}
+			},
+			isFound(val1,val2){
+				for(var i in val1)
+				{
+					var flag = true;
+					for(var j in val2)
+					{
+						if(val2[j] != val1[i][j])
+							flag = false;
+					}
+					if(flag)
+						return flag
+				}
+			}	
+		},
+		mounted(){
+			this.$nextTick(()=>{
+				if(this.hasWorker.length > 0)
+				{
+					for(var i in this.hasWorker)
+					{
+						this.selectWorker.push(this.hasWorker[i]);
+					}
+				}	
+			});
 		}
 	}
 </script>

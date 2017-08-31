@@ -9,8 +9,9 @@
 					<div class=" col-xs-offset-4 col-xs-3 text-center"><h4>爬取结果</h4></div>
 				</div>
 				
-				<div style="margin-top:50px;">
-					<table class="table table-striped table-hover">
+				<div style="margin-top:50px;" class="row">
+					<div class="col-md-11">
+						<table class="table table-bordered ">
 						<thead>
 							<tr>
 								<th v-for="(item,key) in showData[0]">{{key}}</th>
@@ -21,7 +22,9 @@
 								<td v-for="detail in item">{{detail}}</td>
 							</tr>
 						</tbody>
-					</table>
+						</table>
+					</div>
+					
 				</div>
 
 				<div class="col-xs-offset-3">
@@ -41,6 +44,11 @@
 	import selectSpider from './selectSpider'
 
 	export default {
+		props:{
+			transData:{
+				type:Array
+			}
+		},
 		name:"getData",
 		components:{
 			selectSpider
@@ -124,9 +132,18 @@
 		},
 		mounted:function(){
 			this.$nextTick(()=>{
-				var number = this.getNumber();
-				this.pageNumber = Math.ceil(number/48);
-				this.getDataFromIndex(0);
+				if(this.transData != null  && this.transData.length > 0)
+				{
+
+					this.isSelectShow = false;
+					this.pageNumber = Math.ceil(this.transData.length/48);
+					this.showData = this.transData;
+				}else{
+					var number = this.getNumber();
+					this.pageNumber = Math.ceil(number/48);
+					this.getDataFromIndex(0);
+				}
+				
 			});
 		}
 	}
