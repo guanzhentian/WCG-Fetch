@@ -133,7 +133,7 @@
 							设定起始爬取时间为：
 						</div>
 						<div class="col-md-4">
-							{{task.startTime}}
+							{{data.startTime}}
 						</div>
 					</div>
 					<div class="row">
@@ -141,7 +141,7 @@
 							设定结束爬取时间为：
 						</div>
 						<div class="col-md-4">
-							{{task.endTime}}
+							{{data.endTime}}
 						</div>	
 					</div>
 					<div class="row">
@@ -149,15 +149,15 @@
 							是否为强制执行：
 						</div>
 						<div class="col-md-4">
-							{{task.isForce}}
+							{{data.isForce}}
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-2">
 							Worker详细信息:
 						</div>
-						<div class="col-md-2" v-for="item in task.selectWorker">
-							<span @click="showDetailWorker(item)" class="btn btn-default setBtn">{{item.id,item.value}}</span>
+						<div class="col-md-2" v-for="item in data.selectWorker">
+							<span @click="showDetailWorker(item)" class="btn btn-default setBtn	">{{item.id,item.value}}</span>
 						</div>
 					</div>
 					<transition name="showFormRight">
@@ -178,7 +178,7 @@
 								Worker配置
 							</div>
 							<div class="col-md-12">
-								<setWorker :workerData ="workerData" @submit="workerFinished" :hasWorker="task.selectWorker"></setWorker>
+								<setWorker :workerData ="workerData" @submit="workerFinished" :hasWorker="data.selectWorker"></setWorker>
 							</div>
 							<div class="col-md-offset-4 col-md-2">
 								<button class="btn btn-warning " @click="resetWorker">修改</button>
@@ -201,7 +201,7 @@
 							起始爬取时间为：
 						</div>
 						<div class="col-md-4">
-							{{task.startTime}}
+							{{data.startTime}}
 						</div>
 					</div>
 					<div class="row">
@@ -209,7 +209,7 @@
 							结束爬取时间为：
 						</div>
 						<div class="col-md-4">
-							{{task.endTime}}
+							{{data.endTime}}
 						</div>	
 					</div>
 					<div class="row">
@@ -217,7 +217,7 @@
 							是否为强制执行：
 						</div>
 						<div class="col-md-4">
-							{{task.isForce}}
+							{{data.isForce}}
 						</div>
 					</div>
 					<div class="row">
@@ -238,7 +238,7 @@ import selectButton from './SmallComponents/selectButton'
 import detailWorker from './SmallComponents/detailWorker'
 import setWorker from './SmallComponents/setWorker'
 import getData from './getData'
-
+import axios from 'axios'
 	export default{
 		props:{
 			data:{
@@ -248,26 +248,19 @@ import getData from './getData'
 		},
 		watch:{
 			data:function(){
-				if(this.data.status == 'doing' || this.data.status == 'success')
-				{
-					this.task = {
-						startTime:"2017-8-30T14:12",
-						endTime: "2017-8-30T15:12",
-						isForce:true,
-						selectWorker:[{
-							id:'3',
-							value:'这是第三个worker'
-						},{
-							id:'2',
-							value:'这是第二个worker'
-						}]
-					}
-				}
+				axios.get('/api/getWorker')
+				.then((res)=>{
+					this.workerData = res.data;
+				})
+				.catch((err)=>{
+					console.error(err);
+				})
 				this.endTime = null;
 				this.selectWorker = [];
 				this.oldData = [];
 				this.isWatchData = false;
-			}
+
+			},
 		},
 		components:{
 			selectButton,
@@ -287,7 +280,7 @@ import getData from './getData'
 				isForce:true,
 				isShowDetailWorker:false,
 				showWorker:{},
-				task:{},
+				item:{},
 				isShowChangeWorker:false,
 				oldData:[],
 				isWatchData:false
@@ -325,7 +318,6 @@ import getData from './getData'
 				}
 				if(this.isShowSetEndTime == true)
 				{
-					console.log(this.endTime);
 					if(this.endTime == null)
 					{
 						alert('请填写结束时间！');
@@ -357,12 +349,27 @@ import getData from './getData'
 				
 				if(this.checkData())
 				{
-					var data = {
+					var finalWorkerData = [];
+					for(var i =0;i<this.selectWorker.length;i++)
+					{
+						finalWorkerData.push(this.selectWorker[i].id);
+					}
+					var finaldata = {
 						startTime:this.startTime,
 						endTime:this.endTime,
-						selectWorker:this.selectWorker,
-						isForce:this.isForce
+						selectWorker:finalWorkerData,
+						isForce:this.isForce,
+						id:this.data.id
 					}
+					axios.post('/api/startSpider',finaldata)
+					.then((res)=>{					
+						alert("配置成功！");
+						this.$emit("reGetMessage");
+						this.closeDiv();
+					})
+					.catch((err)=>{
+						console.error(err);
+					})
 					//api
 
 				}
@@ -370,18 +377,37 @@ import getData from './getData'
 			showDetailWorker(item)
 			{
 				this.isShowDetailWorker = true;
+				
+
 				this.showWorker = item;
 			},
 			changeWorker(){
-				this.isShowDetailWorker = false;
 				this.showWorker = {};
+				setTimeout(()=>{this.isShowDetailWorker = false;}, 10);
+					
 			},
 			resetWorker(){
-				console.log(this.selectWorker);
-				this.task.selectWorker = [];
+				var finalSelectWorker = [];
 				for(var i in this.selectWorker)
 				{
-					this.task.selectWorker.push(this.selectWorker[i]);
+					finalSelectWorker.push(this.selectWorker[i].id);
+				}
+
+				axios.post('/api/changeSpiderWorker',{
+					id:this.data.id,
+					selectWorker:finalSelectWorker
+				}).then((res)=>{
+					if(res.data.message == 'success')
+					{
+						alert('修改成功！');
+						this.$emit("reGetMessage");
+						this.closeDiv();
+					}
+				})
+				this.item.selectWorker = [];
+				for(var i in this.selectWorker)
+				{
+					this.item.selectWorker.push(this.selectWorker[i]);
 				}
 				this.isShowChangeWorker = false;
 			},
@@ -390,8 +416,15 @@ import getData from './getData'
 			},
 			watchData(){
 				this.oldData.length = 0;
-				this.oldData.push(this.data);	
-				this.isWatchData = true;
+				axios.post('/api/getAllData',{
+					id:this.data.id
+				}).then((res)=>{
+					this.oldData = res.data;
+					this.isWatchData = true;
+				}).catch((err)=>{
+					console.error(err);
+				})
+				
 			}
 		},
 		mounted(){
@@ -403,30 +436,7 @@ import getData from './getData'
 				{
 					this.startTime = this.curTime;
 				}
-			},6000)
-
-
-			//实时更新可用数量 获取可用worker
-
-			this.workerData = [{
-				id:'1',
-				value:'这是第一个worker'
-			},{
-				id:'2',
-				value:'这是第二个worker'
-			},{
-				id:'3',
-				value:'这是第三个worker'
-			},{
-				id:'4',
-				value:'这是第四个worker'
-			},{
-				id:'5',
-				value:'这是第五个worker'
-			}]
-
-			///
-			
+			},1000)			
 		}
 	}
 </script>

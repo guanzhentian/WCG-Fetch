@@ -92,6 +92,69 @@ app.post('/api/test',function(req,res){
   res.json(req.body);
 });
 
+app.get('/api/getSpider',function(req,res){
+  console.log("获取所有的爬虫信息")
+
+ var data = [{
+        id:'1',
+        time:'2017/8/25 15:40',
+        mainUrl:'baidu.com',
+        method:"chrome",
+        detailUrl:"test-detailUrl.com",
+        dataUrl:["\\test\\","\\test2\\","\\test3\\"],
+        attr:[{
+          name:"test",
+          value:"testValue"
+        },{
+          name:"test2",
+          value:"testValue2"
+        },{
+          name:"test3",
+          value:"testValue3"
+        }],
+        status:'doing',
+        startTime:"2017-8-30T14:12",
+        endTime: "2017-8-30T15:12",
+        isForce:true,
+        selectWorker:[{
+          id:'3',
+          value:'这是第三个worker'
+        },{
+          id:'2',
+          value:'这是第二个worker'
+        }]
+      },{
+        id:'2',
+        time:'2017/8/25 15:40',
+        mainUrl:'google.com',
+        method:"chrome",
+        detailUrl:"test-detailUrl.com",
+        dataUrl:["\\test\\"],
+        attr:[{
+          name:"test",
+          value:"testValue"
+        }],
+        status:'wait'
+      },{
+        id:'3',
+        time:'2017/8/25 15:40',
+        mainUrl:'google.com',
+        method:"chrome",
+        detailUrl:"test-detailUrl.com",
+        dataUrl:["\\test\\"],
+        attr:[{
+          name:"test",
+          value:"testValue"
+        }],
+        status:'success',
+        startTime:"2017-8-30T14:12",
+        endTime: "2017-8-30T15:12",
+        isForce:true,
+      }];
+
+      res.send(data);
+});
+
 app.get('/api/getDoSpider',function(req,res){
   var getInputData = [{
         'id':1,
@@ -157,13 +220,49 @@ app.post('/api/getSpiderData',function(req,res){
 });
 
 app.post('/api/login',function(req,res){
-  console.log(req.body);
+  console.log(req.body);  
   if(req.body.name == 'testname' && req.body.password == 'testpassword')
   {
     res.send({'message':'success'});
   }else{
     res.send({'message':'fail'});
   }
+});
+
+app.get('/api/getWorker',function(req,res){
+  console.log('获取所有的worker信息');
+
+  var workerData = [{
+        id:'1',
+        value:'这是第一个worker'
+      },{
+        id:'2',
+        value:'这是第二个worker'
+      },{
+        id:'3',
+        value:'这是第三个worker'
+      },{
+        id:'4',
+        value:'这是第四个worker'
+      },{
+        id:'5',
+        value:'这是第五个worker'
+      }];
+    res.send(workerData);
+});
+
+app.post('/api/getWorkerFromId',function(req,res){
+  res.send({message:"返回 id为 "+req.body.id+ "的worker的消息！"});
+});
+
+app.post('/api/startSpider',function(req,res){
+  console.log(req.body);
+  res.send("success");
+});
+
+app.post('/api/changeSpiderWorker',function(req,res){
+  console.log(req.body);
+  res.send({message:"success"});
 });
 
 var server = app.listen(port)

@@ -106,7 +106,6 @@ import axios from 'axios'
 			},	
 			changeMultiple(flag)
 			{
-				console.log(this.endNumber,this.multipleNumber)
 				if(flag>0)
 				{
 					if (this.curMultiple < this.multipleNumber)

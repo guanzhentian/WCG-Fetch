@@ -12,6 +12,7 @@
 </div>
 </template>
 <script type="text/javascript">
+import axios from 'axios'
 	export default{
 		props:{
 			worker:{
@@ -25,13 +26,26 @@
 				curInv:null
 			}	
 		},
+		methods:{
+			getMessage(){
+				axios.post('/api/getWorkerFromId',{
+					id:this.worker.id
+				},{
+					timeout:500
+				}).then((res)=>{
+					this.logData.unshift(res.data.message);
+				}).catch((err)=>{
+					console.error(err);
+				})
+			}
+		},
 		watch:{
 			worker:function(va1,va2){
 				clearInterval(this.curInv);
-				this.logData.length = 0;
-				if(this.worker != {})
+				this.logData.length = 0;	
+				if(typeof this.worker.id != 'undefined')
 				{
-					this.curInv = setInterval(()=>{this.logData.unshift("时间：2017-8-30T15:0"+this.logData.length+" 消息： 这是一条测试消息！来自"+this.worker.value)},1000);
+					this.curInv = setInterval(this.getMessage,500);
 				}
 			
 			}

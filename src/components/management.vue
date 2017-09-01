@@ -74,7 +74,7 @@
 	</div>
 </transition-group>
 	<transition name="detail" tag="div">
-		<detail :data='message'  v-show="isShowDetail" @closeDetail='closeDetail'></detail>
+		<detail :data='message'  v-show="isShowDetail" @closeDetail='closeDetail' @reGetMessage ="reset"></detail>
 	</transition>
 </div>
 </template>
@@ -84,6 +84,14 @@ import axios from 'axios'
 	export default {
 		components:{
 			detail
+		},
+		watch:{
+			login:function(){
+				if(this.login == false)
+				{
+					this.reset();
+				}
+			}	
 		},
 		computed:{
 			enableLogin(){
@@ -126,6 +134,32 @@ import axios from 'axios'
 			}
 		},
 		methods:{
+			reset(){
+				this.waitData.length = 0;
+				this.doingData.length = 0;
+				this.successData.length = 0;	
+				axios.get('/api/getSpider')
+					.then((res)=>{
+						for(var i =0; i<res.data.length;i++)
+						{
+							if(res.data[i].status == 'wait')
+							{
+								this.waitData.push(res.data[i]);
+							}
+							else if(res.data[i].status == 'doing')
+							{
+								this.doingData.push(res.data[i]);
+							}
+							else if(res.data[i].status == 'success')
+							{
+								this.successData.push(res.data[i]);
+							}
+						}
+					})
+					.catch((err)=>{
+						console.error(err);
+					})
+			},
 			submit(){
 				//api put name password	
 				axios.post('/api/login',{
@@ -153,105 +187,7 @@ import axios from 'axios'
 			}
 		},
 		mounted(){
-			var data = [{
-				time:'2017/8/25 15:40',
-				mainUrl:'baidu.com',
-				method:"chrome",
-				detailUrl:"test-detailUrl.com",
-				dataUrl:["\\test\\","\\test2\\","\\test3\\"],
-				attr:[{
-					name:"test",
-					value:"testValue"
-				},{
-					name:"test2",
-					value:"testValue2"
-				},{
-					name:"test3",
-					value:"testValue3"
-				}]
-			},{
-				time:'2017/8/25 15:40',
-				mainUrl:'google.com',
-				method:"chrome",
-				detailUrl:"test-detailUrl.com",
-				dataUrl:["\\test\\"],
-				attr:[{
-					name:"test",
-					value:"testValue"
-				}]
-			}];
-			var data1 = [{
-				time:'2017/8/25 15:40',
-				mainUrl:'baidu.com',
-				method:"chrome",
-				detailUrl:"test-detailUrl.com",
-				dataUrl:["\\test\\","\\test2\\","\\test3\\"],
-				attr:[{
-					name:"test",
-					value:"testValue"
-				},{
-					name:"test2",
-					value:"testValue2"
-				},{
-					name:"test3",
-					value:"testValue3"
-				}]
-			},{
-				time:'2017/8/25 15:40',
-				mainUrl:'google.com',
-				method:"chrome",
-				detailUrl:"test-detailUrl.com",
-				dataUrl:["\\test\\"],
-				attr:[{
-					name:"test",
-					value:"testValue"
-				}]
-			}];
-			var data2 = [{
-				time:'2017/8/25 15:40',
-				mainUrl:'baidu.com',
-				method:"chrome",
-				detailUrl:"test-detailUrl.com",
-				dataUrl:["\\test\\","\\test2\\","\\test3\\"],
-				attr:[{
-					name:"test",
-					value:"testValue"
-				},{
-					name:"test2",
-					value:"testValue2"
-				},{
-					name:"test3",
-					value:"testValue3"
-				}]
-			},{
-				time:'2017/8/25 15:40',
-				mainUrl:'google.com',
-				method:"chrome",
-				detailUrl:"test-detailUrl.com",
-				dataUrl:["\\test\\"],
-				attr:[{
-					name:"test",
-					value:"testValue"
-				}]
-			}];
-			
-			this.successData = data1;
-			for(var i = 0 ;i<this.successData.length;i++)
-			{
-				this.successData[i]['status'] = 'success';
-			}
-			
-			this.waitData = data2;
-			for(var i = 0 ;i<this.waitData.length;i++)
-			{
-				this.waitData[i]['status'] = 'wait';
-			}
-			
-			this.doingData = data;
-			for(var i = 0 ;i<this.doingData.length;i++)
-			{
-				this.doingData[i]['status'] = 'doing';
-			}
+
 		},
 	}
 </script>

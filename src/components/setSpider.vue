@@ -283,7 +283,6 @@ import axios from 'axios'
 				}
 				for(var i in this.inputData.attr)
 				{	
-					console.log(typeof this.inputData.attr[i].name);
 					if(this.inputData.attr[i].name.replace(patt,'') == '')
 					{
 						alert("请输入属性名称");

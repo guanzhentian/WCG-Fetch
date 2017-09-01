@@ -58,7 +58,6 @@ import axios from 'axios'
 					id:this.selectId
 				}).then((res)=>{
 					this.showData = res.data;
-					console.log("success get!");
 				}).catch((err)=>{
 					console.error(err);
 				})
