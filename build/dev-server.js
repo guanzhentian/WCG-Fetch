@@ -116,15 +116,9 @@ app.get('/api/getSpider',function(req,res){
         startTime:"2017-8-30T14:12",
         endTime: "2017-8-30T15:12",
         isForce:true,
-        selectWorker:[{
-          id:'3',
-          value:'这是第三个worker'
-        },{
-          id:'2',
-          value:'这是第二个worker'
-        }]
+        selectWorker:3
       },{
-        id:'2',
+        id:'2', 
         time:'2017/8/25 15:40',
         mainUrl:'google.com',
         method:"chrome",
@@ -232,26 +226,13 @@ app.post('/api/login',function(req,res){
 app.get('/api/getWorker',function(req,res){
   console.log('获取所有的worker信息');
 
-  var workerData = [{
-        id:'1',
-        value:'这是第一个worker'
-      },{
-        id:'2',
-        value:'这是第二个worker'
-      },{
-        id:'3',
-        value:'这是第三个worker'
-      },{
-        id:'4',
-        value:'这是第四个worker'
-      },{
-        id:'5',
-        value:'这是第五个worker'
-      }];
+  var workerData = {
+          number:5
+        };
     res.send(workerData);
 });
 
-app.post('/api/getWorkerFromId',function(req,res){
+app.post('/api/getMessageFromId',function(req,res){
   res.send({message:"返回 id为 "+req.body.id+ "的worker的消息！"});
 });
 

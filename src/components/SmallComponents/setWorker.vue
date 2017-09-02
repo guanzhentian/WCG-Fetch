@@ -1,6 +1,6 @@
 <template>
-<div>
-	<div class="row">
+<div class="row">
+	<!-- <div class="row">
 		<label class="col-md-2 col-md-offset-4">
 			<button class="btn btn-primary" @click="setWorker(1)">添加Worker</button>
 		</label>
@@ -22,21 +22,24 @@
 			</div>
 			{{selectWorker[n-1].value}}
 		</div>
-	</transition-group>
+	</transition-group> -->
+	<div class="col-md-4">选择Worker的数量</div>
+	<div class="col-md-6">
+		<input type="range" mix="1" :max="workerData.number" v-model="selectWorker">
+	</div>
+		
+	<div class="col-md-2">{{selectWorker}}</div>
 </div>
 </template>
 <script type="text/javascript">
 	export default {
 		props:{
 			workerData:{
-				type:Array,
+				type:Object,
 				require:true
 			},
 			hasWorker:{
-				type:Array,
-				default(){
-					return [];
-				}
+				type:Number
 			}
 		},
 		watch:{
@@ -46,7 +49,7 @@
 		},
 		data(){
 			return {
-				selectWorker:[]
+				selectWorker:1
 			}
 		},
 		methods:{
@@ -81,12 +84,10 @@
 		},
 		mounted(){
 			this.$nextTick(()=>{
-				if(this.hasWorker.length > 0)
+				console.log(this.workerData.number);
+				if(this.hasWorker > 1)
 				{
-					for(var i in this.hasWorker)
-					{
-						this.selectWorker.push(this.hasWorker[i]);
-					}
+					this.selectWorker = this.hasWorker;
 				}	
 			});
 		}

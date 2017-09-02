@@ -302,7 +302,7 @@ import axios from 'axios'
 					var date = new Date();
 					this.inputData.time = date.toLocaleString();
 					this.inputData.status = 'wait';
-					axios.post('/api/test',this.inputData)
+					axios.post('/api/setSpider',this.inputData)
 					.then(function(res){
 						alert("提交成功！");
 						window.location.reload();

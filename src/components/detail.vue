@@ -154,10 +154,10 @@
 					</div>
 					<div class="row">
 						<div class="col-md-2">
-							Worker详细信息:
+							爬虫工作信息:
 						</div>
-						<div class="col-md-2" v-for="item in data.selectWorker">
-							<span @click="showDetailWorker(item)" class="btn btn-default setBtn	">{{item.id,item.value}}</span>
+						<div class="col-md-2">
+							<span @click="showDetailWorker()" class="btn btn-default setBtn	">点击查看</span>
 						</div>
 					</div>
 					<transition name="showFormRight">
@@ -250,16 +250,16 @@ import axios from 'axios'
 			data:function(){
 				axios.get('/api/getWorker')
 				.then((res)=>{
+					console.log(res.data);
 					this.workerData = res.data;
 				})
 				.catch((err)=>{
 					console.error(err);
 				})
 				this.endTime = null;
-				this.selectWorker = [];
+				this.selectWorker = 1;
 				this.oldData = [];
 				this.isWatchData = false;
-
 			},
 		},
 		components:{
@@ -275,8 +275,8 @@ import axios from 'axios'
 				isShowSetStartTime:false,
 				isShowSetEndTime:false,
 				curTime:'',
-				workerData:[],
-				selectWorker:[],
+				workerData:{},
+				selectWorker:1,
 				isForce:true,
 				isShowDetailWorker:false,
 				showWorker:{},
@@ -349,23 +349,22 @@ import axios from 'axios'
 				
 				if(this.checkData())
 				{
-					var finalWorkerData = [];
-					for(var i =0;i<this.selectWorker.length;i++)
-					{
-						finalWorkerData.push(this.selectWorker[i].id);
-					}
 					var finaldata = {
 						startTime:this.startTime,
 						endTime:this.endTime,
-						selectWorker:finalWorkerData,
+						selectWorker:this.selectWorker,
 						isForce:this.isForce,
 						id:this.data.id
 					}
 					axios.post('/api/startSpider',finaldata)
-					.then((res)=>{					
-						alert("配置成功！");
-						this.$emit("reGetMessage");
-						this.closeDiv();
+					.then((res)=>{	
+						if(res.data.message = "success")
+						{
+							alert("配置成功！");
+							this.$emit("reGetMessage");
+							this.closeDiv();
+						}				
+						
 					})
 					.catch((err)=>{
 						console.error(err);
@@ -377,9 +376,7 @@ import axios from 'axios'
 			showDetailWorker(item)
 			{
 				this.isShowDetailWorker = true;
-				
-
-				this.showWorker = item;
+				this.showWorker = this.data;
 			},
 			changeWorker(){
 				this.showWorker = {};
@@ -387,32 +384,37 @@ import axios from 'axios'
 					
 			},
 			resetWorker(){
-				var finalSelectWorker = [];
-				for(var i in this.selectWorker)
-				{
-					finalSelectWorker.push(this.selectWorker[i].id);
-				}
-
 				axios.post('/api/changeSpiderWorker',{
 					id:this.data.id,
-					selectWorker:finalSelectWorker
+					selectWorker:this.selectWorker
 				}).then((res)=>{
 					if(res.data.message == 'success')
 					{
 						alert('修改成功！');
 						this.$emit("reGetMessage");
+						this.isShowChangeWorker = false;
 						this.closeDiv();
 					}
+				}).catch((err)=>{
+					console.error(err);
 				})
-				this.item.selectWorker = [];
-				for(var i in this.selectWorker)
-				{
-					this.item.selectWorker.push(this.selectWorker[i]);
-				}
-				this.isShowChangeWorker = false;
+				
 			},
 			endSpider(){
 				//api
+				axios.post('/api/closeSpider',{
+					id:this.data.id
+				}).then((res)=>{
+					if(res.data.message == 'success')
+					{
+						alert('成功关闭！');
+						this.$emit("reGetMessage");
+						this.closeDiv();
+
+					}
+				}).catch((err)=>{
+					console.error(err);
+				})
 			},
 			watchData(){
 				this.oldData.length = 0;

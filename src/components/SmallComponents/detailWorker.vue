@@ -28,7 +28,7 @@ import axios from 'axios'
 		},
 		methods:{
 			getMessage(){
-				axios.post('/api/getWorkerFromId',{
+				axios.post('/api/getMessageFromId',{
 					id:this.worker.id
 				},{
 					timeout:500
