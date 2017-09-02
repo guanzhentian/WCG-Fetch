@@ -72,6 +72,7 @@
 						<div class="formDetail container">
 							<div class="row content">
 								<h3 class="text-center">请输入需要爬取的属性值和与之对应的XPATH</h3>
+								<p class="text-muted text-center">也可以输入CSS选择器，XPATH用| 表示或，CSS选择器使用逗号表示或</p>
 							</div>
 							<div class="row">
 								<div class="content">

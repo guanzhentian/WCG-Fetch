@@ -349,13 +349,22 @@ import axios from 'axios'
 				
 				if(this.checkData())
 				{
+					var sTime = '';
+					if(!this.isShowSetStartTime)
+					{
+						sTime = 'start';
+					}else{
+						sTime = this.startTime;
+					}
+
 					var finaldata = {
-						startTime:this.startTime,
+						startTime:sTime,
 						endTime:this.endTime,
 						selectWorker:this.selectWorker,
-						isForce:this.isForce,
+						isForce:this.isForce.toString(),
 						id:this.data.id
 					}
+					console.log(finaldata);
 					axios.post('/api/startSpider',finaldata)
 					.then((res)=>{	
 						if(res.data.message = "success")
