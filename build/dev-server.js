@@ -215,7 +215,7 @@ app.post('/api/getSpiderData',function(req,res){
 
 app.post('/api/login',function(req,res){
   console.log(req.body);  
-  if(req.body.name == 'testname' && req.body.password == 'testpassword')
+  if(req.body.name == 'test' && req.body.password == 'test')
   {
     res.send({'message':'success'});
   }else{
@@ -233,11 +233,7 @@ app.get('/api/getWorker',function(req,res){
 });
 
 app.post('/api/getMessageFromId',function(req,res){
-  res.send([{
-    time:'2017-9-4',
-    id:'1',
-    message:'test'
-  }]);
+  res.send([]);
 });
 
 app.post('/api/startSpider',function(req,res){

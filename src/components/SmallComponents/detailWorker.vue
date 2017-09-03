@@ -40,9 +40,11 @@ import getData from '../getData'
 				},{
 					timeout:500
 				}).then((res)=>{
-					console.log(res.data);
 					this.logData = res.data;
-					console.log(this.logData)
+					if(this.logData.length < 1)
+					{
+						this.logData= [{"暂时没有获取到消息":"暂时没有获取到消息"}]
+					}
 					this.ready = true;
 				}).catch((err)=>{
 					console.error(err);
