@@ -81,42 +81,10 @@
 				</div>
 				<div class='container'>
 					<div class="container">
-						<div class="row">
-							<label class="col-md-2 text-center">选择开始时间:</label>
-							<label class="col-md-2 text-center">是否立即开始</label>
-							<div class="col-md-1 sel">
-								<selectButton @onChange="isShowSetStartTime = !isShowSetStartTime"></selectButton>
-							</div>
-							<transition name="showFormRight">
-								<div class="col-md-6" v-if="isShowSetStartTime">
-									<input type="datetime-local" v-model='startTime' >
-								</div>
-							</transition>
-						</div>
-						<div class="row">
-							<label class="col-md-2 text-center">选择结束时间:</label>
-							<label class="col-md-2 text-center">是否手动结束</label>
-							<div class="col-md-1 sel">
-								<selectButton @onChange="isShowSetEndTime = !isShowSetEndTime"></selectButton>
-							</div>
-							<transition name="showFormRight">
-								<div class="col-md-6" v-if="isShowSetEndTime">
-									<input type="datetime-local" v-model='endTime' >
-								</div>
-							</transition>
-						</div>
 						<setWorker :workerData ="workerData" @submit="workerFinished"></setWorker>
 						<div class="row">
-							<label class=" col-md-4">
-								是否强制执行(将其他worker工作停止)
-							</label>
-							<label class="col-md-1">
-								<selectButton @onChange='isForce = !isForce'></selectButton>
-							</label>
-						</div>
-						<div class="row">
 							<div class="col-md-offset-4 col-md-2">
-								<button class="btn btn-warning" @click="submitSetting">配置完成</button>
+								<button class="btn btn-warning" @click="submitSetting">开始爬取</button>
 							</div>
 						</div>
 					</div>
@@ -130,26 +98,10 @@
 				<div class="container">
 					<div class="row">
 						<div class="col-md-4">
-							设定起始爬取时间为：
+							起始爬取时间为：
 						</div>
 						<div class="col-md-4">
 							{{data.startTime}}
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-4">
-							设定结束爬取时间为：
-						</div>
-						<div class="col-md-4">
-							{{data.endTime}}
-						</div>	
-					</div>
-					<div class="row">
-						<div class="col-md-4">
-							是否为强制执行：
-						</div>
-						<div class="col-md-4">
-							{{data.isForce}}
 						</div>
 					</div>
 					<div class="row">
@@ -213,14 +165,6 @@
 						</div>	
 					</div>
 					<div class="row">
-						<div class="col-md-4">
-							是否为强制执行：
-						</div>
-						<div class="col-md-4">
-							{{data.isForce}}
-						</div>
-					</div>
-					<div class="row">
 						<button class="btn btn-primary col-md-offset-4 col-md-4" @click="watchData">查看爬取数据</button>
 					</div>
 					<transition name="showFormRight">
@@ -256,7 +200,6 @@ import axios from 'axios'
 				.catch((err)=>{
 					console.error(err);
 				})
-				this.endTime = null;
 				this.selectWorker = 1;
 				this.oldData = [];
 				this.isWatchData = false;
@@ -270,14 +213,8 @@ import axios from 'axios'
 		},
 		data(){
 			return{
-				startTime:'',
-				endTime:null,
-				isShowSetStartTime:false,
-				isShowSetEndTime:false,
-				curTime:'',
 				workerData:{},
 				selectWorker:1,
-				isForce:true,
 				isShowDetailWorker:false,
 				showWorker:{},
 				item:{},
@@ -290,58 +227,14 @@ import axios from 'axios'
 			closeDiv(){
 				this.$emit('closeDetail');
 			},
-			setTime(){
-				var time  = new Date();
-				this.curTime = ''+time.getFullYear()+'-';
-				if(time.getMonth() < 9)
-				{
-					this.curTime+='0';
-				}
-				this.curTime+= (time.getMonth()+1)+'-'+time.getDate()+'T';
-				if(time.getHours()<10)
-				{
-					this.curTime +='0';
-				}
-				this.curTime+=time.getHours()+':'+time.getMinutes();
-			},
 			workerFinished(item){
 				this.selectWorker = item;
 			},
 			checkData(){
-				if(this.isShowSetStartTime == true)
-				{
-					if(this.startTime <this.curTime)
-					{
-						alert('开始时间有误，请重新填写！');
-						return false
-					}
-				}
-				if(this.isShowSetEndTime == true)
-				{
-					if(this.endTime == null)
-					{
-						alert('请填写结束时间！');
-						return false;
-					}
-					if(this.endTime <= this.startTime)
-					{
-						alert('结束时间有误，请重新填写');
-						return false;
-					}
-				}
-				if(this.selectWorker.length < 1)
+				if(this.selectWorker < 1)
 				{
 					alert('请添加worker');
 					return false;
-				}else{
-					for(var i in this.selectWorker)
-					{
-						if(this.selectWorker[i] == '')
-						{
-							alert('请选择worker');
-							return false;
-						}
-					}
 				}
 				return true
 			},
@@ -349,22 +242,10 @@ import axios from 'axios'
 				
 				if(this.checkData())
 				{
-					var sTime = '';
-					if(!this.isShowSetStartTime)
-					{
-						sTime = 'start';
-					}else{
-						sTime = this.startTime;
-					}
-
 					var finaldata = {
-						startTime:sTime,
-						endTime:this.endTime,
 						selectWorker:this.selectWorker,
-						isForce:this.isForce.toString(),
 						id:this.data.id
 					}
-					console.log(finaldata);
 					axios.post('/api/startSpider',finaldata)
 					.then((res)=>{	
 						if(res.data.message = "success")
@@ -438,16 +319,7 @@ import axios from 'axios'
 				
 			}
 		},
-		mounted(){
-			this.setTime();
-			this.startTime = this.curTime;
-			setInterval(()=>{
-				this.setTime();
-				if(!this.isShowSetStartTime)
-				{
-					this.startTime = this.curTime;
-				}
-			},1000)			
+		mounted(){		
 		}
 	}
 </script>

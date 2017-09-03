@@ -37,7 +37,7 @@ import axios from 'axios'
 			selectId:function(){
 				clearInterval(this.curInv);
 				this.getMessage();
-				this.curInv = setInterval(this.getMessage,300);
+				this.curInv = setInterval(this.getMessage,3000);
 			}
 		}
 		,
@@ -64,7 +64,7 @@ import axios from 'axios'
 			}
 		},
 		mounted(){
-			
+			this.getMessage();
 		}
 	}
 </script>
