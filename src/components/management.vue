@@ -90,6 +90,7 @@ import axios from 'axios'
 				if(this.login == false)
 				{
 					this.reset();
+					setInterval(this.reset,60000);
 				}
 			}	
 		},

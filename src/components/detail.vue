@@ -167,9 +167,20 @@
 					<div class="row">
 						<button class="btn btn-primary col-md-offset-4 col-md-4" @click="watchData">查看爬取数据</button>
 					</div>
+					<div class="row">
+						<button class="btn btn-primary col-md-offset-4 col-md-4" @click="anlysisData">分析数据</button>
+					</div>
 					<transition name="showFormRight">
 						<div class="row" v-if="isWatchData">
 							<getData :transData='oldData' class="col-md-11" ></getData>
+						</div>
+					</transition>
+					<transition name="showFormRight">
+						<div class=" row" v-if="isAnalysisData">
+							<div class="col-md-10">
+								<kind :basicData='oldData' :selectId="data.id" class="" ></kind>
+							</div>
+							
 						</div>
 					</transition>
 				</div>
@@ -183,6 +194,8 @@ import detailWorker from './SmallComponents/detailWorker'
 import setWorker from './SmallComponents/setWorker'
 import getData from './getData'
 import axios from 'axios'
+import kind from './Analysis/kind'
+
 	export default{
 		props:{
 			data:{
@@ -209,7 +222,8 @@ import axios from 'axios'
 			selectButton,
 			detailWorker,
 			setWorker,
-			getData
+			getData,
+			kind
 		},
 		data(){
 			return{
@@ -220,11 +234,16 @@ import axios from 'axios'
 				item:{},
 				isShowChangeWorker:false,
 				oldData:[],
-				isWatchData:false
+				isWatchData:false,
+				isAnalysisData:false
 			}
 		},
 		methods:{
 			closeDiv(){
+				this.isWatchData = false;
+				this.isAnalysisData = false;
+				this.isShowDetailWorker  = false;
+				this.$emit("reGetMessage");
 				this.$emit('closeDetail');
 			},
 			workerFinished(item){
@@ -307,15 +326,39 @@ import axios from 'axios'
 				})
 			},
 			watchData(){
-				this.oldData.length = 0;
-				axios.post('/api/getAllData',{
-					id:this.data.id
-				}).then((res)=>{
-					this.oldData = res.data;
-					this.isWatchData = true;
-				}).catch((err)=>{
-					console.error(err);
-				})
+				if(this.isWatchData)
+				{
+					this.isWatchData = false;
+				}else{
+					this.oldData.length = 0;
+					axios.post('/api/getAllData',{
+						id:this.data.id
+					}).then((res)=>{
+						this.oldData = res.data;
+						this.isWatchData = true;
+					}).catch((err)=>{
+						console.error(err);
+					})	
+				}
+				
+				
+			},
+			anlysisData(){
+				if(this.isAnalysisData)
+				{
+					this.isAnalysisData = false;
+				}else{
+					this.oldData.length = 0;
+					axios.post('/api/getAllData',{
+						id:this.data.id
+					}).then((res)=>{
+						this.oldData = res.data;
+						this.isAnalysisData = true;
+					}).catch((err)=>{
+						console.error(err);
+					})	
+				}
+				
 				
 			}
 		},
