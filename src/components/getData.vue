@@ -6,7 +6,8 @@
 		<div class="container">
 			<div class="content">
 				<div class="row">
-					<div class=" col-xs-offset-4 col-xs-3 text-center"><h4>爬取结果</h4></div>
+					<div class=" col-xs-offset-4 col-xs-3 text-center" v-if="!title"><h4>爬取结果</h4></div>
+					<div class=" col-xs-offset-4 col-xs-3 text-center" v-else><h4>{{title}}</h4></div>
 				</div>
 				
 				<div style="margin-top:50px;" class="row">
@@ -48,6 +49,9 @@ import axios from 'axios'
 		props:{
 			transData:{
 				type:Array
+			},
+			title:{
+				type:String
 			}
 		},
 		name:"getData",

@@ -2,17 +2,20 @@
 <div class="contanier">
 	<div class="col-md-12">
 		<h1 class="text-center">{{worker.value}}</h1>
-		<p>实时消息：</p>
+	
 	</div>
 	<div class="col-md-11 log">
-		<transition-group name="logChange">
-			<p v-for="(item,index) in logData" :key="index">{{item}}<span v-if="index == 0" class="label label-danger" style="margin-left:20px;">最新</span></p>
-		</transition-group>
+		<transition name="logChange">
+			<!-- <p v-for="(item,index) in logData" :key="index">{{item}}<span v-if="index == 0" class="label label-danger" style="margin-left:20px;">最新</span></p> -->
+			<getData :transData='logData' v-if="ready" title="实时消息"></getData>
+		</transition>
 	</div>
 </div>
 </template>
 <script type="text/javascript">
 import axios from 'axios'
+import getData from '../getData'
+
 	export default{
 		props:{
 			worker:{
@@ -20,10 +23,14 @@ import axios from 'axios'
 				required:true
 			}
 		},
+		components:{
+			getData
+		},
 		data(){
 			return{
 				logData:[],
-				curInv:null
+				curInv:null,
+				ready:false
 			}	
 		},
 		methods:{
@@ -33,22 +40,21 @@ import axios from 'axios'
 				},{
 					timeout:500
 				}).then((res)=>{
-					this.logData.unshift(res.data.message);
+					console.log(res.data);
+					this.logData = res.data;
+					console.log(this.logData)
+					this.ready = true;
 				}).catch((err)=>{
 					console.error(err);
 				})
 			}
 		},
 		watch:{
-			worker:function(va1,va2){
-				clearInterval(this.curInv);
+			worker:function(){
+				this.ready = false;
 				this.logData.length = 0;	
-				if(typeof this.worker.id != 'undefined')
-				{
-					this.curInv = setInterval(this.getMessage,500);
-				}
-			
-			}
+				this.getMessage();
+			}		
 		}
 	}
 </script>

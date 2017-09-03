@@ -233,7 +233,11 @@ app.get('/api/getWorker',function(req,res){
 });
 
 app.post('/api/getMessageFromId',function(req,res){
-  res.send({message:"返回 id为 "+req.body.id+ "的worker的消息！"});
+  res.send([{
+    time:'2017-9-4',
+    id:'1',
+    message:'test'
+  }]);
 });
 
 app.post('/api/startSpider',function(req,res){

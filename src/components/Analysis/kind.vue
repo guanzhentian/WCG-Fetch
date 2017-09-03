@@ -24,6 +24,7 @@
 				</div>
 			</div>
 			<div v-if="finished" :key="2">
+				<button class="btn btn-primary" @click="finished = false">返回</button>
 				<table class="table table-bordered">
 					<caption class="text-center caption">
 						<span v-for="(text,index) in pickData">{{text}}:{{value[index]}}</span>
