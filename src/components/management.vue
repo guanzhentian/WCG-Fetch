@@ -29,6 +29,7 @@
       <div class="container">
         <ul class="nav navbar-nav">
             <li><a>后台管理</a></li>
+            <li><a class="btn btn-default "style="background-color:white" @click="reset">刷新</a></li>
         </ul>
       </div>
    	</header>

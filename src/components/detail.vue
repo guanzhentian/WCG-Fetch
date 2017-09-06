@@ -297,7 +297,6 @@ import kind from './Analysis/kind'
 					if(res.data.message == 'success')
 					{
 						alert('修改成功！');
-						this.$emit("reGetMessage");
 						this.isShowChangeWorker = false;
 						this.closeDiv();
 					}
@@ -314,9 +313,7 @@ import kind from './Analysis/kind'
 					if(res.data.message == 'success')
 					{
 						alert('成功关闭！');
-						this.$emit("reGetMessage");
 						this.closeDiv();
-
 					}
 				}).catch((err)=>{
 					console.error(err);
