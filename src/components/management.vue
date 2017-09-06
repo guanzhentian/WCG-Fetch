@@ -89,6 +89,7 @@ import axios from 'axios'
 			login:function(){
 				if(this.login == false)
 				{
+					console.log("call for login change")
 					this.reset();
 					setInterval(this.reset,60000);
 				}
@@ -139,6 +140,7 @@ import axios from 'axios'
 				this.waitData.length = [];
 				this.doingData.length = [];
 				this.successData.length = [];	
+				console.log("this call form reset()");
 				axios.get('/api/getSpider')
 					.then((res)=>{
 						for(var i =0; i<res.data.length;i++)

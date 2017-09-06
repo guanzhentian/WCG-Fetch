@@ -273,7 +273,8 @@ import kind from './Analysis/kind'
 					})
 					//api
 					setTimeout(()=>{
-						this.$emit("reGetMessage");
+						this.workerData = {};
+						console.log("call form setTimeout")
 						this.closeDiv();
 					},500)
 				}

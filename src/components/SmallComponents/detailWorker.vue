@@ -39,8 +39,9 @@ import getData from '../getData'
 					id:this.worker.id
 				},{
 					timeout:15000
-				}).then((res)=>{
+				}).then((res)=>{				
 					this.logData = res.data;
+					console.log(this.logData);
 					if(this.logData.length < 1)
 					{
 						this.logData= [{"暂时没有获取到消息":"暂时没有获取到消息"}]
@@ -51,7 +52,9 @@ import getData from '../getData'
 				})
 			},
 			refreash(){
+				this.ready = false;
 				this.logData = [];
+				console.log(this.logData);
 				this.getMessage();
 			}
 		},
