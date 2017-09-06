@@ -266,20 +266,16 @@ import kind from './Analysis/kind'
 						id:this.data.id
 					}
 					axios.post('/api/startSpider',finaldata)
-					.then((res)=>{	
-						if(res.data.message = "success")
-						{
-							alert("配置成功！");
-							this.$emit("reGetMessage");
-							this.closeDiv();
-						}				
-						
+					.then((res)=>{				
 					})
 					.catch((err)=>{
 						console.error(err);
 					})
 					//api
-
+					setTimeout(()=>{
+						this.$emit("reGetMessage");
+						this.closeDiv();
+					},500)
 				}
 			},
 			showDetailWorker(item)

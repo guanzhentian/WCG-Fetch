@@ -136,9 +136,9 @@ import axios from 'axios'
 		},
 		methods:{
 			reset(){
-				this.waitData.length = 0;
-				this.doingData.length = 0;
-				this.successData.length = 0;	
+				this.waitData.length = [];
+				this.doingData.length = [];
+				this.successData.length = [];	
 				axios.get('/api/getSpider')
 					.then((res)=>{
 						for(var i =0; i<res.data.length;i++)

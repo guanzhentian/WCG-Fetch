@@ -2,14 +2,14 @@
 <div class="contanier">
 	<div class="col-md-12">
 		<h1 class="text-center">{{worker.value}}</h1>
-	
+		<button class="btn btn-primary " @click="refreash">刷新</button>
 	</div>
 	<div class="col-md-11 log">
 		<transition name="logChange">
 			<!-- <p v-for="(item,index) in logData" :key="index">{{item}}<span v-if="index == 0" class="label label-danger" style="margin-left:20px;">最新</span></p> -->
 			<getData :transData='logData' v-if="ready" title="实时消息"></getData>
 		</transition>
-	</div>
+	</div>	
 </div>
 </template>
 <script type="text/javascript">
@@ -38,7 +38,7 @@ import getData from '../getData'
 				axios.post('/api/getMessageFromId',{
 					id:this.worker.id
 				},{
-					timeout:500
+					timeout:15000
 				}).then((res)=>{
 					this.logData = res.data;
 					if(this.logData.length < 1)
@@ -49,6 +49,10 @@ import getData from '../getData'
 				}).catch((err)=>{
 					console.error(err);
 				})
+			},
+			refreash(){
+				this.logData = [];
+				this.getMessage();
 			}
 		},
 		watch:{
